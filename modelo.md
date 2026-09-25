@@ -1,707 +1,537 @@
-# Modelo de precificação enterprise do NI
+# Modelo de precificação enterprise do NI — v6
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
 dois divergirem, **este arquivo está certo**.
 
-**Escopo:** só a versão enterprise dos produtos — a que passa por implementação e adaptação. O
-plug-and-play tem preço de tabela (§ Os produtos) e não é orçado por este modelo.
+**Escopo: a versão enterprise de três produtos — Maísa, Plum e Ludi.** Enterprise é a que passa por
+implementação e adaptação ao cliente. O plug-and-play tem preço de tabela (§ Os três produtos) e não
+é orçado aqui. Outros produtos da casa ficam fora deste modelo.
 
-## Por que o preço não é só horas × taxa
+## O que mudou na v6, e por quê
 
-O NI vende **software que continua rodando depois da entrega**, não projeto de consultoria. Três
-consequências:
+Até a v5 o preço nascia do **esforço**: `semanas-analista × ITIP`, calibrado sobre as poucas
+propostas que a casa já tinha vendido e herdado da estrutura de consultoria do núcleo de Dados. Três
+problemas, todos documentados na pesquisa de 25/09/2026 (a íntegra está em [`mercado.md`](mercado.md)):
 
-**O desconto de empresa júnior está na taxa, não no preço final.** Um time júnior cobra menos por
-semana-analista que o mercado sênior, mas gasta mais semanas para a mesma entrega. Precificar por
-custo produz preço próximo do de mercado sem a marca de mercado para sustentá-lo.
+1. **Preço por esforço pune o que a casa quer fazer.** Quanto mais reuso, mais IA no
+   desenvolvimento e mais rota de configuração, menos semanas, e menos a casa cobra, enquanto o valor
+   que o cliente recebe não muda. É a **armadilha da produtividade**.
+2. **A literatura põe o valor como âncora e o custo como piso.** O modelo fazia o contrário: custo
+   como âncora, valor como ajuste de até 1,70.
+3. **Calibrar em cima do próprio histórico reproduz o histórico.** A casa vende pouco; cada deal
+   pesava demais, e o que a casa concluía ser preço baixo virava a régua.
 
-**O que a casa entrega tem custo recorrente.** Infra, tokens e conversas do WhatsApp existem depois
-da última semana faturada — e são **repassados ao cliente**, que paga direto (§ O custo de operação
-é do cliente). O que fica com a casa é a **manutenção**: bug, API de terceiro que muda, sustentação.
-Preço fechado sem mensalidade é esse trabalho de graça, com atraso.
+**A v6 troca a âncora.** O preço de cada produto parte de uma **tabela ancorada no que o mercado
+cobra por aquele tipo de produto**, na unidade que o mercado usa (conversas, perguntas, alunos).
+Esforço, valor e histórico continuam no modelo, cada um no seu papel:
 
-**A margem vem de reuso, não de multiplicador.** O motor do Plum é o exemplo: cada projeto que
-reaproveita o esqueleto derruba o piso do seguinte.
-
----
-
-## Os produtos
-
-Retrato para o Passo 0. **A tabela diz onde o código está, não o que a casa pode vender** — ver a
-nota abaixo dela.
-
-| Produto | Linguagem | O que é |
+| Fonte | Papel na v6 | Onde |
 | --- | --- | --- |
-| **Maísa** | TypeScript | Atendente de IA no WhatsApp. Vendida hoje como secretária (agendamento, nota fiscal); atendimento e qualificação de lead por WhatsApp é o mesmo produto |
-| **Smiller** | Python | A Maísa para clínica odontológica — um **fork**: correção numa não chega na outra |
-| **Ludi / LUT** | Python | Coordenador escolar virtual: FAQ por setor, notas, comunicados |
-| **Plum** | Python | Porteiro entre as bases de dados e quem pergunta: consulta em linguagem natural, read-only. **Em produção** |
-| **Maestro** | — | Kits de campanha (social, conteúdo, mídia) gerados com IA a partir de dados via API. Em produção num cliente só: um segundo pedido é **extensão** |
+| **Mercado** | **âncora**: define a tabela e o formato de cobrança de cada produto | [`mercado.md`](mercado.md), tabelas abaixo |
+| **Valor para o cliente** | **teto e alavanca**: captura de 10%–20% do ganho declarado, nunca acima de 30% | § A camada de valor |
+| **A empresa** (pesquisa na internet) | **contexto**: porte real, momento, quem decide, alternativa | [`pesquisa-empresa.md`](pesquisa-empresa.md) |
+| **Esforço** | **piso** e viabilidade: o preço não pode ficar abaixo do que custa entregar, e o projeto tem de caber na janela | § O piso de esforço |
+| **Histórico da casa** | **evidência de reação**: onde um cliente já disse "caro", "gostei" ou "aprovado". Informa, não calibra | § O histórico |
 
-**Vender é diferente de reaproveitar.** Uma capacidade que existe **3×** só é barata se a venda for
-no **mesmo produto**; entre produtos, o que atravessa é conhecimento, não código.
+**O que saiu:** o ITIP por rota e por modo de risco, o multiplicador `f_retorno × f_área ×
+f_porte`, o teto de payback de 6 meses como teto de preço (capturava até 50% do ganho, muito acima do
+que se pratica) e o teto de mensalidade por porte (substituído pelas faixas de cada produto).
 
-| Capacidade | Onde existe | Vezes |
-| --- | --- | --- |
-| WhatsApp via Evolution API | Maísa (TS) · Smiller (Py) · Ludi (Py) | 3× |
-| Agente LLM com tools | Maísa · Smiller · Ludi | 3× |
-| Multi-tenancy | Maísa · Smiller · Ludi — **três mecanismos incompatíveis** | 3× |
-| Agendamento | Maísa · Smiller · Ludi | 3× |
-| FAQ com busca vetorial | Maísa · Smiller · Ludi — **dois modelos de embedding incompatíveis** | 3× |
-| Google Calendar / OAuth | Maísa · Ludi | 2× |
-| Handoff humano | Smiller · Ludi | 2× |
-| Memória de conversa | Maísa · Smiller | 2× |
-| Auth / sessão | Maísa · Ludi | 2× |
-| Leads / outreach | Smiller · Ludi | 2× |
-| Nota fiscal (Focus NFe) | Maísa | 1× |
-| Comunicados · etiquetas com IA · notas escolares · e-mail transacional | Ludi | 1× |
-| Debounce de mensagens | Smiller | 1× |
-| CRM de leads por WhatsApp | protótipo arquivado, nunca foi para produção — **não é feature entregue** | 0× |
-
-⚠️ **Capacidade que não está na Maísa mas que a casa já fez em outro produto** (handoff, leads) é
-**"perto"** no Passo 0 — rota extensão, com a etapa no dimensionamento —, e **não fora de escopo**.
-Só não desconte como se o código viesse junto.
-
-### Integrações — o status de credencial vem antes do preço
-
-| Provedor | Família | Credencial | Já implementado em |
-| --- | --- | --- | --- |
-| Evolution API (WhatsApp) | armazenamento | ✅ `temos` | Maísa, Smiller, Ludi |
-| WhatsApp Cloud API (Meta) | armazenamento | ✅ em uso | Plum |
-| Google Calendar | armazenamento | ✅ `temos` | Maísa, Ludi |
-| Gemini · Anthropic · Supabase · Redis · Resend | — | ✅ em uso | vários |
-| Focus NFe | — | ✅ em uso | Maísa |
-| HubSpot · Meta Ads · Google Ads | — | ✅ em uso | Maestro |
-| **Booksy** | 🔴 **gestor** | ⚠️ `parceria` | nenhum |
-| ERP do cliente (ex.: Sankhya) | — | ❓ **não documentada** até alguém confirmar API de leitura | nenhum |
-
-**Escala de credencial:** `aberto` (cria conta sozinho) · `cadastro` (registra aplicação,
-self-service) · `parceria` (exige negociação, **prazo desconhecido**) · `temos` · `bloqueado`.
-**Nunca prometa integração sem ler este campo.** `parceria` significa que a data de entrega não
-está nas mãos do NI.
-
-**Duas famílias, e a diferença muda o preço:**
-
-- **Provedor-armazenamento** (Google Calendar, Outlook, CalDAV) guarda o que mandarem. O produto é
-  dono da disponibilidade. É adapter — trabalho conhecido.
-- **Provedor-gestor** (Booksy, Trinks, Fresha, Belle) tem modelo próprio de agenda e regras
-  próprias de disponibilidade. Calcular o vago por fora produz horário que o próprio provedor
-  recusa na hora de marcar. **Não cabe nas portas atuais** — é porta nova mais mapa de catálogo.
-
-### Preços plug-and-play em vigor
-
-**Preço de tabela, self-service, sem implantação** — fora do escopo deste modelo.
-
-| | Essencial | Profissional ⭐ | Clínica |
-| --- | --- | --- | --- |
-| Mensal | R$ 59 | **R$ 97** | R$ 149 |
-| Anual (11×) | R$ 649 | **R$ 1.067** | R$ 1.639 |
-| Notas incluídas/mês | 60 | 200 | 500 |
-
-⚠️ **O degrau é enorme.** Entre R$ 149/mês self-service e um setup enterprise de cinco dígitos não
-existe SKU. Cliente de porte médio cai nesse vão.
-
-### Duas regras da casa que aparecem na proposta
-
-**Contrato de cliente-âncora.** Quem financia uma capacidade que ainda não existe paga o
-desenvolvimento e depois fica em **preço de custo, sem licença** — paga manutenção corretiva, sem
-evolução. O NI mantém o direito de revender, e o âncora sabe disso desde o início.
-
-**Feature só vira produto com dois clientes pedindo e alguém que a mantenha.** Se ninguém sabe
-dizer quem mantém depois que o autor se formar, a capacidade fica como extensão paga por quem a
-quer.
+**O que ficou igual:** os campos bloqueantes, a triagem de aderência, a qualificação, o repasse de
+tokens e infra ao cliente, a meta de recorrência (MRR ≥ 25% do ano 1), a regra do cliente-âncora, a
+política de desconto e o princípio de que **risco vira cláusula, não margem**.
 
 ---
 
 ## Como o preço se forma
 
 ```
-semanas-analista = Σ_etapas (semanas_PERT × quem ENTREGA)   ← pessoas alocadas × semanas de
-                                                              CALENDÁRIO, incluindo as de prova
-                                                              da Poli. NÃO é esforço em FTE.
-                                                              Trainee conta; TL, PM e validador não
-rateio           = semanas-analista × fator_coordenação      ← PM + Tech Lead, por fora da equipe
-base             = semanas-analista + rateio                 ← base = sw × 1,15 no padrão
+Toda proposta sai com TRÊS OPÇÕES — Essencial, Recomendada, Completa.
 
-referência  = base × ITIP_alvo          ← O PREÇO COMEÇA AQUI. Depende da rota E do modo de risco
-PREÇO ANO 1 = referência × multiplicador de valor (1,00 a 1,70)
-teto        = payback do cliente ≤ 6 meses
-piso        = base × R$ 805             ← alarme de regressão. Nunca venda abaixo, e nunca
-                                          comece por aqui
+para cada opção:
+  setup        = tabela do produto                    ← Maísa por complexidade; Plum por linha;
+               + itens novos × taxa de construção        Ludi = implantação + integrações
+               (+ 15% se houver pacote enterprise)
+  mensalidade  = tabela do produto                    ← a unidade do mercado: conversas,
+               (+ adicionais: volume, conectores)        perguntas, alunos
+  ano 1        = setup + mensalidade × 12
+  repasse      = tokens + infra + APIs pagas, pagos pelo cliente, FORA do ano 1
 
-  depois, e só depois:  preço ano 1 = setup + (mensalidade × meses)
-                        PISO de recorrência: nunca zero, MRR ≥ 25% do ano 1
-                        TETO de mensalidade por operação atendida — o teto GANHA do piso
+conferências, nesta ordem:
+  valor        captura = ano 1 da Recomendada ÷ ganho anual declarado   alvo 10–20% · máx. 30%
+  alternativa  o que o cliente faria sem o NI, e quanto custa
+  piso         ano 1 da Essencial ≥ semanas-analista × R$ 925            (se houver dimensionamento)
+  recorrência  mensalidade × 12 ≥ 25% do ano 1                           gate 10
 ```
 
-⚠️ **O modelo precifica o contrato do ano 1 inteiro. O corte entre setup e mensalidade é decisão de
-caixa, não de preço.**
+**O vendedor não escolhe mais um "modo de risco".** As três opções fazem esse trabalho, e melhor: o
+cliente se autosseleciona, a opção do meio ganha pelo efeito compromisso, e a de cima serve de
+âncora. **Qual opção o cliente escolheu é o dado mais valioso que a casa pode registrar**: é
+preferência revelada, e com poucos deals é a única medida honesta de disposição a pagar.
 
-⚠️ **O ITIP praticado (R$ 805) não é referência de preço: é o diagnóstico.** Serve para duas
-coisas e nenhuma outra: **acender o alarme de regressão** e **medir o que ficou na mesa**. Como
-ponto de partida do cálculo, ou como comparável numa negociação, ele só reproduz o problema que
-este modelo existe para corrigir.
+### As três opções
 
-**Fator de coordenação**, função de quantos projetos rodam em paralelo:
+As três têm de ser lucrativas, ou seja, estar acima do piso. **Nenhuma é chamariz.** O que muda entre
+elas é **escopo e garantia**, não o nome.
 
-| Projetos simultâneos | 2 | 3 | 4 | 6+ |
-| --- | --- | --- | --- | --- |
-| Acréscimo sobre as semanas-analista | **+31%** | +21% | **+15%** | +10% |
-
-Na dúvida, use **+15%**. O custo de coordenação é quase fixo: fica caro por projeto justamente
-quando o portfólio esvazia.
-
-**Por que não bandas de preço por porte.** Banda absoluta por rota × porte é indexada ao tamanho do
-cliente e **ignora o tamanho do projeto** — erra por mais de 100% contra propostas reais.
-`semanas-analista × ITIP`, olhando o contrato do ano 1, reproduz a prática da casa com erro de
-~15%.
-
-## As três rotas
-
-| Rota | O que se faz | ITIP praticado (piso) | **ITIP alvo (padrão)** |
+| | **Essencial** | **Recomendada** ⭐ | **Completa** |
 | --- | --- | --- | --- |
-| **configuração** | parâmetro, conteúdo, credencial do cliente, treinamento | R$ 805 | **R$ 1.400** |
-| **extensão** | código novo para um cliente, dentro do produto | R$ 805 | **R$ 1.600** |
-| **motor + domínio** | reaproveita o esqueleto do Plum e reconstrói fonte, domínio e autorização | R$ 805 | **R$ 1.800** |
+| Escopo | o núcleo do pedido. O que é "perto" ou "novo" e não é essencial vai para a fase 2, **com preço já escrito** | o pedido inteiro | o pedido + o que reduz o risco do cliente: unidades, canais ou integrações a mais, e cobertura maior de domínio |
+| Evolução incluída na mensalidade | 2 h/mês | 6 h/mês | 12 h/mês |
+| Suporte | resposta em 2 dias úteis | 1 dia útil | 4 h úteis para incidente crítico, **sem multa** (gate 6) |
+| Acompanhamento pós go-live | 2 semanas | 4 semanas | 8 semanas |
+| Relatório mensal de resultado | — | ✅ | ✅, com revisão trimestral |
 
-**O praticado é um número só.** A casa não diferencia rota no preço que pratica; a diferença de
-ITIP alvo por rota é decisão de custo de senioridade.
+🎯 **A Recomendada é o pedido do cliente.** Não infle a Completa para fazer a Recomendada parecer
+barata, nem corte da Recomendada o que ele pediu para ela caber no bolso: se não cabe, a Essencial
+existe para isso.
 
-⚠️ **Na configuração, o alvo de 1.400 está acima de um preço que um cliente já recusou por caro.**
-Foi mantido de propósito: o objetivo é um preço que **faça sentido**, não o que maximiza
-fechamento, e a ~R$ 950 a rota ficaria sem margem sobre o piso. Precificar no alvo ali é
-território onde **se espera perder alguns deals** — aceitável enquanto a perda **por preço** ficar
-em 20%–40%.
-
-**Use o praticado para calcular o piso e o alvo para propor.** O piso responde "abaixo de quanto
-estamos regredindo?"; o alvo responde "para onde a taxa deveria ir na próxima proposta".
-
-Contra o mercado: R$ 805 por unidade de base equivale a **~R$ 20/hora**. Software house no Brasil
-cobra R$ 250 a R$ 600/hora; freelancer sênior, R$ 90 a R$ 220. É esse múltiplo, não o preço
-nominal, o argumento numa negociação.
-
-⚠️ **Três avisos que deixam todo piso deste modelo otimista:**
-
-- **Coordenador, Tech Lead e validador de CS** só entram pelo rateio — o validador, em conta
-  nenhuma.
-- **`semanas` são de CALENDÁRIO, incluindo as semanas de prova da Escola Politécnica**, em que o
-  time não trabalha. O prazo da proposta tem de incluí-las, e elas contam em `semanas-analista`.
-- **`semanas-analista` é pessoas declaradas × semanas de calendário.** Não converta para FTE: hoje
-  o analista pega 1 projeto no geral e as duas medidas quase coincidem, mas no dia em que alguém
-  pegar dois a conta muda de significado sem mudar de fórmula.
+🎯 **O relatório mensal não é enfeite.** Quem vê o ganho todo mês usa mais e renova mais; agente de
+IA pouco usado não renova. Ele mostra horas poupadas, conversas resolvidas, perguntas respondidas —
+e é o que alimenta a pergunta de valor na renovação.
 
 ---
 
-## A rota motor + domínio, por camada
+## Os três produtos
 
-É a rota mais aberta e a mais mal orçada, porque o que se herda e o que se joga fora não são óbvios.
-Esta tabela existe para não estimar do zero — mas **a equipe declarada pelo PM ganha da soma
-dela** (Passo 4).
+Retrato para a triagem de aderência. **A tabela diz onde o código está, não o que a casa pode
+vender.**
 
-**O que se herda é o motor:** `planner → validação por allowlist → reforços determinísticos →
-executor → renderização determinística`, com a filosofia "o LLM propõe, o backend valida e executa".
-O LLM nunca toca no dado; o contrato entre os dois é uma consulta read-only descrita em JSON. **É o
-único lugar deste modelo onde o desconto de reuso é grande e honesto**, porque é a mesma linguagem
-e a mesma base.
-
-| Camada | Herda? | Semanas-analista |
+| Produto | Linguagem | O que é, na versão enterprise |
 | --- | --- | --- |
-| Motor: planner, validação, executor, renderizadores | ✅ inteiro | 0 |
-| Safeguards já pagos: fronteira de palavra na detecção de entidade, limpeza de histórico entre turnos, saneamento de alucinação do plano, timeout e retry do LLM, dedup de mensagem, junção de fragmentos | ✅ | 0 |
-| Testes de padrão: validação, herança de contexto, reforço de filtro | ✅ | 0 |
-| **Mobilização**: discovery, PRD e liberação de acessos | ❌ sempre | **2 semanas × a equipe inteira** (≈6) |
-| **Executor — fonte própria** (base do cliente em Postgres, consulta em memória) | ✅ | 0,5 |
-| **Executor — por API de terceiro** | ❌ reescreve | **4 por sistema** (PERT 2 / 4 / 6) |
-| **Domínio**: schema, prompt, planos determinísticos, matcher de entidade, renderizadores de domínio | ❌ reescreve | 4 a 6 |
-| **Autorização — porta binária** (autenticado vê tudo) | ✅ | 0,5 |
-| **Autorização — isolamento por pessoa, obrigatório e não-removível** | ❌ novo | **2 a 3**, mais o teste que prova a impossibilidade de acesso a terceiro |
-| **Persistência de estado** (tirar da memória do processo) | ❌ | 1 |
-| **Go-live, treinamento e acompanhamento** | ❌ sempre | 3 a 4 |
-| **PM e Tech Lead** | ❌ sempre | não são semanas cheias: entram pelo **fator de coordenação** (+10% a +31%) |
-| **Plataforma web**: SSO, RBAC, shell, onboarding self-service | ❌ novo | ~3 semanas × 5 pessoas |
+| **Maísa** | TypeScript | Atendente de IA no WhatsApp: atendimento, FAQ, agendamento, qualificação de lead, nota fiscal. **Autopiloto**: faz o trabalho, e compete com o orçamento de pessoas |
+| **Plum** | Python | Porteiro entre as bases de dados e quem pergunta: consulta em linguagem natural, read-only, **em produção**. **Copiloto**: ajuda quem decide |
+| **Ludi** | Python | Coordenador escolar virtual: FAQ por setor, comunicados, notas, agendamento, e análise de desempenho. **Copiloto** da escola |
 
-O "4 por sistema" vem de quem integrou: três APIs de terceiro feitas por um analista em menos de
-10 semanas, com margem para credencial que atrasa, API mal documentada e reconciliação entre
-fontes. Credencial de `parceria` ou não documentada continua sendo **cláusula** (gate 3), não
-semana a mais.
+**Vender é diferente de reaproveitar.** WhatsApp, agente com tools, agendamento e FAQ vetorial
+existem nos três, **em implementações incompatíveis** (linguagens, multi-tenancy e embeddings
+diferentes). Entre produtos atravessa **conhecimento**, não código: capacidade que a casa já fez em
+outro produto é **"perto"** (baixa o risco, não o preço), nunca "pronta".
 
-**A lição vale além desta rota:** dimensionar por camada técnica e somar erra. Dimensione em **dois
-blocos** — mobilização, que é quase fixa, e execução, que escala com o número de sistemas — e conte
-o Tech Lead pelo rateio.
+**O motor do Plum é o único reuso grande e honesto:** `planner → validação por allowlist → reforços
+determinísticos → executor → renderização determinística`. O LLM propõe, o backend valida e executa;
+o LLM nunca toca no dado. Herda-se o motor inteiro; **reconstroem-se em todo projeto a fonte, o
+domínio e a autorização** — e são essas três camadas que viram as linhas da tabela do Plum.
 
-### As três perguntas que dimensionam esta rota
+### Integrações — o status de credencial vem antes do preço
 
-**1. De onde vêm os dados?** Base própria do cliente é o caso barato: o executor herdado consulta em
-memória e pronto. **API de terceiro muda a natureza do executor** — deixa de ser consulta sobre uma
-tabela cheia e vira chamada escopada por pessoa. Conte **por sistema**, e cheque o status de
-credencial de cada um.
+**Escala de credencial:** `aberto` (cria conta sozinho) · `cadastro` (registra aplicação,
+self-service) · `parceria` (exige negociação, **prazo desconhecido**) · `temos` · `bloqueado`.
+`parceria`, `bloqueado` ou **não documentada** = a data não está nas mãos do NI (gate 3).
 
-**2. Quão grande é o vocabulário do domínio?** O schema, o prompt, os planos determinísticos e o
-matcher de entidade são 100% do cliente. Herda-se a *estrutura*, nunca o *conteúdo*.
+**Duas famílias de agenda, e a diferença muda o preço:**
+- **Provedor-armazenamento** (Google Calendar, Outlook, CalDAV) guarda o que mandarem. É adapter.
+- **Provedor-gestor** (Booksy, Trinks, Fresha, Belle) tem regras próprias de disponibilidade. **Não
+  cabe nas portas atuais** — porta nova mais mapa de catálogo (gate 4).
 
-**3. Quem pode ver o quê?** Esta é a pergunta que o comercial não faz e que mais muda o preço. Se
-"todo mundo autenticado vê tudo", herda de graça. Se **cada pessoa só pode ver o próprio dado**, é
-desenvolvimento novo: a identidade tem de ser resolvida antes da consulta, o filtro tem de ser
-injetado pelo backend de forma não-removível, e o LLM nunca pode construí-lo. É requisito de
-segurança, não conveniência, e dispara gate.
+### O plug-and-play, só para saber onde está o degrau
+
+Maísa self-service, sem implantação: **R$ 59 · R$ 97 · R$ 149 por mês**. Entre isso e um setup
+enterprise de cinco dígitos não existe SKU. Se o pedido cabe no plug-and-play, **venda o
+plug-and-play**: enterprise é para o que a prateleira não faz.
 
 ---
 
-## Porte do cliente
+## Maísa enterprise
 
-Duas medidas, porque os produtos da casa têm dois tipos de usuário e confundi-los erra o preço nos
-dois sentidos.
+**Formato:** setup por complexidade + mensalidade de sustentação e evolução + repasse de tokens, infra
+e Meta a custo. **Referência de mercado:** agente de WhatsApp sob medida, setup de R$ 8–20 mil
+(simples), R$ 20–40 mil (médio) e R$ 40–80 mil (complexo) (Forja; Blip); manutenção de R$ 390–800/mês
+sem tokens (Zap Trend); plataforma mid-market de R$ 2.500–4.400/mês com IA inclusa (Octadesk).
+Detalhe em [`mercado.md`](mercado.md) §1.
 
-**U — quem opera.** Atendentes, secretárias, coordenadores, ou quem faz as perguntas ao Plum. Dirige
-treinamento, perfis de permissão e complexidade de autorização.
+### A complexidade
 
-**V — volume mensal.** Atendimentos, conversas ou consultas processadas. Define a banda da
-mensalidade e a **estimativa do repasse** de tokens e conversas, que o cliente paga direto.
-
-| Porte | Operação atendida | Referência |
+| Nível | O que cabe | Sinal de reconhecimento |
 | --- | --- | --- |
-| **P0** micro | < 10 pessoas | consultório individual — enterprise raramente cabe aqui |
-| **P1** pequeno | 10 – 50 | clínica com várias unidades, escola pequena |
-| **P2** médio | 50 – 250 | rede, escola grande, operação regional |
-| **P3** grande | > 250, ou faturamento > R$ 300M | quase sempre dispara gate |
+| **M1 · padrão** | atendimento, FAQ, agendamento em agenda de armazenamento, lembretes, handoff para humano. Uma regra de negócio para todas as unidades. Nenhum sistema do cliente além da agenda | outro cliente do mesmo segmento usaria igual, trocando o texto |
+| **M2 · integrada** | M1 + **1 ou 2 sistemas** do cliente (CRM, ERP, sistema de gestão, emissor fiscal), **ou** um fluxo próprio (qualificação de lead com passagem ao comercial, cobrança, pós-venda), **ou** várias unidades com regras diferentes | "quando o lead responder X, cria no CRM e avisa o vendedor" |
+| **M3 · complexa** | **3 ou mais sistemas**, ou mais de um canal, ou vários fluxos próprios ao mesmo tempo | a lista de integrações não cabe numa frase |
 
-⚠️ **Porte é da operação que vai usar a solução, não do grupo econômico.** Subsidiária brasileira
-prevalece sobre receita global.
+Na dúvida entre dois níveis, **fique no de baixo** e escreva o porquê. Item "novo" (ninguém da casa
+fez) **não sobe o nível**: entra à parte, pela taxa de construção (§ Itens novos).
 
-**Cobrança por assento é o padrão errado aqui**: o valor de produto agêntico não escala com o
-número de logins. Porte entra só no `f_porte`. ⚠️ **V define a parte de operação — que é repasse —,
-não a mensalidade inteira**: o que a casa vende no mensal é manutenção, e manutenção escala com
-**superfície** (integrações, código sob medida). Ver § Mensalidade.
+### A tabela
 
-## Multiplicador de valor
+| | Essencial | **Recomendada** | Completa |
+| --- | --- | --- | --- |
+| **Setup M1** | R$ 10.000 | **R$ 14.000** | R$ 18.000 |
+| **Setup M2** | R$ 22.000 | **R$ 30.000** | R$ 38.000 |
+| **Setup M3** | R$ 42.000 | **R$ 55.000** | R$ 68.000 |
+| **Mensalidade M1** | R$ 800 | **R$ 1.100** | R$ 1.500 |
+| **Mensalidade M2** | R$ 1.400 | **R$ 1.900** | R$ 2.500 |
+| **Mensalidade M3** | R$ 2.400 | **R$ 3.200** | R$ 4.000 |
 
-Aplica sobre a referência. É a peça que captura valor além do custo.
+**Adicional de volume:** acima de **3.000 conversas/mês**, **+R$ 250/mês a cada 1.000 conversas**,
+nas três opções. É a curadoria e o monitoramento, que crescem com o volume. *(Conta nossa: na
+Octadesk, cada 1.000 contatos a mais custam ~R$ 760 com plataforma e IA; cobramos um terço porque
+plataforma e tokens aqui são repasse.)*
+
+**Âncora de valor:** a alternativa da Maísa é gente. Uma recepcionista ou atendente custa
+**R$ 3.500–6.000/mês** carregada. Escreva na proposta quanto a mensalidade + repasse representa disso.
+
+⚠️ **Cobrar por resolução ainda não.** O mercado faz (US$ 0,99–2,00 por resolução), mas exige
+definição de "resolução" no contrato, exclusão da conversa em que um humano interveio e telemetria
+por cliente, que a casa não tem. Quando tiver, o caminho é **um bônus pequeno** sobre a taxa de
+resolução medida nos logs do NI, **nunca** sobre as vendas do cliente.
+
+## Plum enterprise
+
+**Formato:** setup **por linha** (núcleo + cada sistema + autorização) + plataforma mensal **fixa,
+com usuários ilimitados e franquia de perguntas** + manutenção por conector + repasse. **Nunca por
+assento.** **Referência de mercado:** implementação de BI com várias fontes e permissões, R$ 40–120
+mil; plataformas de text-to-SQL com usuários ilimitados, US$ 250–720/mês, e US$ 5.000/mês no
+enterprise com SLA ([`mercado.md`](mercado.md) §2).
+
+### O setup, por linha
+
+| Linha | Essencial | **Recomendada** | Completa |
+| --- | --- | --- | --- |
+| **Núcleo** — mobilização, domínio (schema, prompt, planos determinísticos, vocabulário), 1 fonte própria do cliente, autorização binária, go-live | R$ 16.000 | **R$ 20.000** | R$ 25.000 |
+| **+ por sistema de terceiro** (leitura via API) | R$ 10.000 | **R$ 10.000** | R$ 10.000 |
+| **+ por fonte própria adicional** (outra base do cliente) | R$ 4.000 | **R$ 4.000** | R$ 4.000 |
+| **+ isolamento por pessoa** ("cada um só vê o próprio dado") — gate 8 | R$ 12.000 | **R$ 12.000** | R$ 12.000 |
+| **+ plataforma web** (SSO, perfis, painel), se pedida | R$ 15.000 | **R$ 15.000** | R$ 15.000 |
+
+**O que muda entre as opções é o núcleo e quantas linhas entram**, não o preço de cada linha. A
+Essencial cobre menos do domínio (as perguntas mais frequentes) e pode deixar um sistema para a fase
+2; a Completa cobre o domínio inteiro e todos os sistemas. Integração e segurança não têm versão
+"barata": ou é feita, ou fica de fora.
+
+### A mensalidade
+
+| Franquia de perguntas/mês, **usuários ilimitados** | Essencial | **Recomendada** | Completa |
+| --- | --- | --- | --- |
+| até 2.000 | R$ 1.500 | **R$ 1.800** | R$ 2.400 |
+| até 6.000 | R$ 2.500 | **R$ 3.000** | R$ 3.900 |
+| até 15.000 | R$ 4.000 | **R$ 4.800** | R$ 6.200 |
+| acima de 15.000 | sob medida — escale | | |
+
+**+ R$ 400/mês por conector de sistema de terceiro**, nas três opções. É quem paga o conserto quando
+a API do outro lado muda, e é o que a casa esquecia de cobrar: um Plum com três sistemas tem três
+vezes a superfície de manutenção de um Plum com um.
+
+**Estourou a franquia dois meses seguidos:** sobe de faixa no mês seguinte, avisado por escrito. Não
+se cobra por pergunta avulsa: o comprador enterprise paga por previsibilidade.
+
+## Ludi enterprise
+
+**Formato:** **preço por aluno por ano**, cobrado em 12 parcelas mensais, com piso mensal +
+implantação. **Referência de mercado:** comunicação escolar, R$ 12–58 por aluno/ano (ClassApp,
+Diário Escola); IA pedagógica, R$ 103–110 por aluno/ano (Letrus) ou US$ 15 (Khanmigo)
+([`mercado.md`](mercado.md) §3).
+
+### A tabela
+
+| Módulo, por aluno ativo por ano | Essencial | **Recomendada** | Completa |
+| --- | --- | --- | --- |
+| **Ludi Atendimento** — coordenador virtual no WhatsApp: FAQ por setor, comunicados, notas, agendamento | R$ 15 | **R$ 24** | R$ 34 |
+| **Ludi Pedagógico** — análise de desempenho e de simulados com agentes | R$ 30 | **R$ 45** | R$ 65 |
+| **Piso mensal do contrato** | R$ 1.000 | **R$ 1.200** | R$ 1.500 |
+
+⚠️ **O Pedagógico fica abaixo do topo do mercado de propósito.** A Letrus cobra R$ 103–110 com
+resultado de aprendizagem medido em rede pública; o Ludi ainda não tem esse resultado. Quando tiver
+um caso com número, a faixa sobe.
+
+**Desconto por volume, por faixa** (como imposto de renda — cada faixa só vale para os alunos dentro
+dela, para não haver degrau):
+
+| Alunos | Preço por aluno |
+| --- | --- |
+| 1 a 2.000 | cheio |
+| 2.001 a 5.000 | −10% |
+| 5.001 a 20.000 | −20% |
+| acima de 20.000 | −30% |
+
+**Implantação:** **2 mensalidades, mínimo R$ 5.000** (o mercado cobra implantação de 2 a 4
+mensalidades) + **R$ 10.000 por sistema acadêmico integrado** via API (mesma linha do Plum).
+
+**Cláusulas que vêm do mercado (o contrato da Letrus é o modelo):** contrato de 12 meses, cobrança
+mensal; **preço mantido se o número de alunos variar até ±15%**; recontagem na rematrícula; reajuste
+anual por índice (IPCA).
+
+**Escola pequena:** o piso mensal é o que paga a implantação e a sustentação quando o por-aluno não
+chega lá. Abaixo de ~500 alunos, o piso quase sempre manda.
+
+---
+
+## Itens novos e o cliente-âncora
+
+**Item "novo"** (ninguém da casa fez) não tem preço de mercado de produto, porque ainda não é
+produto. Ele entra no setup pela **taxa de construção**:
 
 ```
-multiplicador = f_retorno × f_área × f_porte      (teto 1,70)
+item novo = semanas-analista da etapa × R$ 1.600
 ```
 
-| Fator | Valor | Critério |
-| --- | --- | --- |
-| **f_retorno** | 1,00 | o cliente não sabe quantificar o ganho |
-| | 1,10 | ganho estimável em termos qualitativos ("some meia pessoa desse processo") |
-| | *gate* | ganho **alto e quantificado** → vai para o modo ROI-âncora, abaixo |
-| **f_área** | 1,00 | **core** — o cliente fala de receita, produto, cliente final |
-| | 0,92 | **função-meio** — o cliente fala de processo, operação, back-office |
-| **f_porte** | 1,00 | **operação atendida** até 50 pessoas |
-| | 1,10 | 50 a 250 |
-| | 1,25 | 250 a 1.000 |
-| | 1,50 | acima de 1.000 |
+A equipe e as semanas vêm do validador técnico ou do PM (Passo 5 do `SKILL.md`), **nunca estimadas
+pelo agente a partir do escopo**. R$ 1.600 por semana-analista fica bem abaixo do mercado (squad de
+software house: R$ 60–120 mil/mês por 4–5 pessoas, ~R$ 3.000–6.000 por pessoa-semana) — com a
+ressalva de que a nossa semana é de dedicação parcial.
 
-⚠️ **O `f_porte` até 1,50 é decisão do núcleo, não medição**: empresa grande provavelmente aceita
-gastar mais, mas a base ainda não tem como provar que a disposição a pagar acompanha o porte.
+**O cliente-âncora** é quem financia uma capacidade que ainda não existe:
+- paga a construção e, **daquela capacidade**, fica depois em preço de custo, **sem licença**: paga
+  sustentação corretiva, sem evolução;
+- o NI mantém o direito de revender, e o âncora sabe disso desde o início;
+- ⚠️ se ninguém souber dizer **quem mantém** a capacidade depois que o autor se formar, não venda
+  como âncora (gate 5).
 
-🎯 **`operação atendida` é quem VAI USAR, não quem assina o contrato.** É a diferença que decide o
-fator, e errar aqui é o jeito mais fácil de inflar uma proposta indevidamente:
+⚠️ **Quando o produto inteiro é novo para aquele cliente** (ex.: uma plataforma web de análise que o
+Ludi ainda não tem), a estrutura é de âncora: **construção + sustentação** (≈22% da construção por
+ano, na mensalidade), sem o por-aluno. Os clientes seguintes pagam a tabela.
 
-> Uma empresa de 1.500 funcionários comprando para **um setor de 70 pessoas** é `f_porte = 1,10`,
-> não 1,50. O que se atende são 70.
+## O pacote enterprise
 
-Conte o que o produto de fato cobre: usuários do Plum, atendentes ou pacientes que a Maísa
-responde, alunos que o Ludi acompanha. Na dúvida entre dois degraus, **fique no de baixo** e
-escreva a contagem na proposta.
+**+15% no setup** quando o cliente tiver **dois ou mais** destes requisitos formais:
+- SSO corporativo;
+- questionário de segurança ou de LGPD a responder;
+- homologação em ambiente de teste do cliente ou aprovação em comitê;
+- contrato redigido pelo jurídico do cliente, com cláusulas próprias;
+- cadastro de fornecedor com exigência documental.
 
-⚠️ **Faturamento não define o degrau — no máximo sobe um.** Um cliente com faturamento acima de
-R$ 1B pode subir **um único degrau**, e **só se a operação atendida já estiver em 250 ou mais**.
-Sem essa trava, o fator vira banda por porte.
+É trabalho real que a empresa pequena não pede. **Não é "empresa grande paga mais"**: sem os
+requisitos, não há pacote, qualquer que seja o faturamento. A pesquisa da empresa diz quando
+perguntar (grupo, S.A., setor regulado). ⚠️ Os 15% são decisão, não medição.
 
-**Área core vs função-meio é o fator mais subjetivo do modelo.** Regra prática: cliente de área
-core fala de receita; cliente de função-meio fala de processo. Consulta de escala, férias e
-reembolso pelos colaboradores é função-meio; um agente que atende o paciente e marca a consulta é
-core.
+---
 
-⚠️ **Porte entra aqui, e só aqui.** Porte modula o preço em até 50%; **o tamanho do projeto
-continua sendo o que o define**. Um projeto de 6 semanas-analista numa empresa de 5.000 pessoas
-segue sendo um projeto de 6 semanas-analista: o `f_porte` multiplica, não substitui.
+## A camada de valor
 
-## Modo ROI-âncora
+### A pergunta obrigatória: quanto o cliente ganha por ano com isto?
 
-Ativa quando o cliente declara ganho anual **quantificado e verificável ≥ R$ 200k**.
-
-⚠️ **Só vale quando dá um preço maior que `referência × multiplicador`.** O modo existe para
-capturar valor acima do custo, não para justificar preço abaixo dele. Se a conta do ROI der menos,
-descarte o modo — ganho declarado pequeno é motivo para rever o escopo, nunca para dar desconto.
+Com o número **do cliente**, com autor e data:
 
 ```
-setup = 10% a 20% do ganho anual líquido do primeiro ano
-        piso: nunca abaixo de referência × multiplicador
-        teto: preço total do ano 1 ≤ ganho anual ÷ 2   (payback ≤ 6 meses)
+captura = ano 1 da Recomendada ÷ ganho anual declarado
 ```
 
-Fornecedores de automação enterprise capturam tipicamente 20% a 30% dos savings. O NI fica em 10% a
-20% — abaixo, porque a marca não sustenta o topo da faixa.
+| Captura | Leitura |
+| --- | --- |
+| **abaixo de 10%** | há espaço. Se o ganho for ≥ R$ 200 mil, abra o **modo ROI-âncora** (abaixo) |
+| **10% a 20%** | **o alvo.** No meio do que se pratica: 5–10% em value pricing de serviços, 20–30% em automação |
+| **20% a 30%** | aceitável; mostre a conta na proposta |
+| **acima de 30%** | **gate 13.** Não baixe o preço por unidade: **reduza o escopo** (a Essencial vira a recomendada, ou o resto vai para a fase 2) |
 
-**Como calcular o ganho, sempre com número do cliente:**
+**Modo ROI-âncora.** Ganho anual **quantificado e verificável ≥ R$ 200 mil** e captura abaixo de 10%:
+
+```
+ano 1 da Recomendada = 15% do ganho anual     (Essencial 10%, Completa 20%)
+  a mensalidade fica na tabela; o setup absorve a diferença
+  nunca abaixo da tabela do produto — o modo existe para subir, não para descer
+```
+
+Dispara o **gate 9**: o preço descolou da tabela, e alguém que responde pela receita olha antes.
+
+Como montar a conta **com** o cliente:
 
 | Forma | Conta |
 | --- | --- |
 | horas poupadas | horas/mês × custo-hora carregado × 12 |
 | custo-hora carregado | salário mensal × 1,8 ÷ 160 |
-| headcount evitado | nº de pessoas × custo anual carregado |
+| pessoas que deixam de ser contratadas | nº de pessoas × salário × 1,8 × 12 |
 | receita adicional | receita atribuível × margem de contribuição |
 
-## Como partir o preço entre setup e mensalidade
+❌ **Nunca estime o ganho por conta própria e use o seu número para subir o preço.** A pesquisa da
+empresa dá hipóteses para levar à reunião, não números para precificar. Sem ganho declarado,
+escreva "perguntado, cliente não soube" e siga com a tabela.
 
-O modelo produz **um número: o contrato do ano 1**. Partir esse número é decisão de caixa e de
-risco, não de preço.
+### A melhor alternativa
 
-**A pergunta que decide:** a solução fica rodando e a casa mantém?
+O cliente compra se ganhar mais com o NI do que com a alternativa dele. Então **toda proposta
+registra a alternativa real e o custo dela**: contratar uma pessoa, um SaaS de nicho, o relatório do
+próprio ERP, uma planilha, a função nativa da plataforma que ele já usa.
 
-| Situação | Formato | Por quê |
-| --- | --- | --- |
-| A solução fica rodando e a casa mantém | **híbrido** — setup menor + mensalidade | sem mensalidade, a manutenção sai da margem do ano seguinte |
-| Entrega fechada, o cliente opera sozinho, sem compromisso de manutenção | **tudo no setup** | não há manutenção a cobrir — e o piso de 25% (gate 10) diz que isso não é opção hoje |
-| Cliente resiste ao valor cheio de uma vez | **híbrido** | mesmo preço no ano 1, entrada menor |
-| Cliente-âncora | **híbrido, sem a parte de evolução** | o âncora fica em preço de custo — custo é a manutenção corretiva (a operação já é repassada), e o piso de 25% (gate 10) vale igual |
+- **Se a alternativa entrega o núcleo do pedido por menos da metade do ano 1 da Essencial,** a
+  proposta tem de dizer **em reais** o que o NI entrega a mais: integração, regras próprias,
+  unidades, segurança. Se não conseguir dizer, é caso de plug-and-play, ou de não vender.
+- **Se a plataforma que ele já usa entrega o núcleo de fábrica,** nenhum preço ganha o deal (gate 12).
+- **Existe diferencial negativo, e ele é nosso:** time que rotaciona, suporte de longo prazo. Garantia
+  escrita, documentação e testes automatizados reduzem esse desconto. Diga na proposta como a casa
+  cobre isso.
 
-Em todos os formatos, **tokens, infra e APIs pagas são repassados ao cliente** e ficam fora do
-contrato do ano 1 (§ O custo de operação é do cliente).
+## O piso de esforço
 
-⚠️ **Mensalidade zero com "2 a 3 meses de acompanhamento inclusos" não é formato fechado** — é
-híbrido com a mensalidade zerada. Depois do terceiro mês, ou existe contrato novo, ou existe
-trabalho de graça.
-
-## Mensalidade
-
-🎯 **O que o NI vende na mensalidade é manutenção do produto dentro da empresa: correção de bugs e
-sustentação. Não é licença de software.** A distinção troca o direcionador de preço e o comparável
-de mercado:
-
-| | Licença / SaaS | **Manutenção (o caso do NI)** |
-| --- | --- | --- |
-| direcionador | volume de uso | **superfície a manter**: integrações de terceiros e código sob medida |
-| comparável | R$ 400 – 1.500/mês para PME | **15% a 25% do custo de implantação por ano** |
-| o que quebra o contrato | pico de uso | terceiro mudar a API |
-
-⚠️ **Mensalidade acima de 25% do setup por ano não é caro por si — é mensalidade que entrega mais
-que manutenção sem dizer.** Prometer *"novas features sob demanda"* dentro do valor fixo é preço
-de evolução com nome de manutenção: o cliente compara com um contrato de sustentação e acha caro, e
-a casa fica devendo feature sem limite.
-
-🎯 **Declare as partes na proposta, separadas** — duas na mensalidade, e a operação como repasse:
-
-| Parte | Direcionador | Referência |
-| --- | --- | --- |
-| **manutenção corretiva** — bugs, quebra de API de terceiro | nº de integrações e código sob medida | 15% a 25% do setup por ano |
-| **evolução** — horas de feature por mês | **tem de ter limite declarado** | é o que justifica passar dos 25% |
-| ~~operação~~ — infra, tokens, APIs pagas | volume mensal V | **fora da mensalidade: repassada ao cliente**, com a estimativa escrita na proposta (abaixo) |
-
-⚠️ **"Features sob demanda" sem teto de horas é passivo ilimitado num valor fixo.** Se a evolução
-entra na mensalidade, **escreva quantas horas por mês** e o que acontece quando estoura — termo
-aditivo.
-
-**Âncora e seguidor pagam mensalidade.** O âncora paga **manutenção corretiva**, sem a parte de
-evolução. O seguidor paga as duas. Os dois pagam a operação direto, pelo repasse.
-
-| Volume mensal (V) | **Banda** |
-| --- | --- |
-| < 500 | R$ 500 – 900 |
-| 500 – 2.000 | R$ 900 – 1.800 |
-| 2.000 – 10.000 | R$ 1.800 – 4.000 |
-| > 10.000 | a partir de R$ 4.000, com componente variável |
-
-**Três integrações de terceiro custam três vezes para manter.** Quando qualquer uma mudar a API, o
-conserto sai da mensalidade — por isso o direcionador é superfície, não volume.
-
-Mercado: custo mensal total de agente de IA para PME brasileira fica entre R$ 400 e R$ 1.500,
-somando plataforma, conversas da API do WhatsApp e tokens; em WhatsApp Business API com volume alto,
-de R$ 800 a R$ 8.000. **Modelo híbrido — setup mais mensalidade — é o padrão de 2026.**
-
-### 🎯 O custo de operação é do cliente
-
-Decidido pelo núcleo: **tokens, infra e APIs pagas (conversas da API do WhatsApp, emissor fiscal,
-APIs de Ads) são repassados ao cliente**, e a proposta diz isso por escrito. A mensalidade do NI é
-**só trabalho da casa**: manutenção corretiva e evolução com limite de horas.
-
-- **Não existe piso de mensalidade por custo.** A regra `mensalidade ≥ 3 × custo recorrente` só
-  volta se a proposta **incluir** a operação no valor — exceção, e com o custo medido.
-- **O cliente vai perguntar quanto custa o token.** Então a proposta leva uma **estimativa do
-  repasse**, declarada como estimativa, não como preço:
-
-  ```
-  repasse estimado/mês ≈ infra rateada + V × custo por interação
-  ```
-
-  Prior da Maísa: infra ~R$ 185/mês e ~R$ 0,111 por interação em token. Conversas de WhatsApp pela
-  tabela da Meta. Plum, Ludi e Smiller **não têm custo medido** — escreva "a medir no primeiro mês"
-  em vez de chutar.
-- **Volume alto não quebra o corte**: o custo da Meta vai no repasse, não na mensalidade.
-- **O caixa do cliente é mensalidade + repasse.** O teto de mensalidade por porte vale só para a
-  mensalidade do NI, mas se a soma com o repasse estimado passar do teto, **avise na saída** — o
-  deal pode morrer por caixa do mesmo jeito.
-- **Defina de quem é a conta.** O ideal é a conta de LLM, nuvem e WhatsApp no nome do cliente. Se
-  ficar no nome do NI, repassar vira cobrança — com serviço cotado em dólar, sujeito a câmbio —, e
-  isso tem de estar escrito.
-- ⚠️ **Cubra o período de projeto também.** Escreva que o repasse vale "ao longo da execução e do
-  período pós-projeto", ou declare que o consumo durante o projeto está no setup.
-
-### 🎯 Piso de recorrência — a meta declarada do núcleo
-
-O núcleo quer migrar para receita recorrente. Em vez de meta por produto, **um piso duro para
-todas as rotas**:
-
-> **Nenhuma proposta sai com mensalidade zero.**
-> **A mensalidade × meses vale no mínimo 25% do contrato do ano 1.**
-
-Quem dispara isso é o **gate 10**. O "2 a 3 meses de acompanhamento incluso" **deixa de ser uma
-opção**.
-
-**Como chegar nos 25%:** `mensalidade ≥ (0,25 × contrato do ano 1) ÷ meses`. Com 12 meses, a
-mensalidade mínima é `contrato do ano 1 ÷ 48`. (Só se a operação estiver incluída, exceção,
-compare com `3 × custo recorrente` e **vale o maior dos dois**.)
-
-#### ⚠️ E um teto, porque mensalidade alta demais não cabe no caixa do cliente
-
-**A mensalidade tem teto, pela mesma escada de `operação atendida` do `f_porte`:**
-
-| Operação atendida | **Teto de mensalidade** | De onde vem a âncora |
-| --- | --- | --- |
-| até 50 | **R$ 1.500** | topo da faixa de mercado para PME brasileira (R$ 400 – 1.500) |
-| 50 a 250 | **R$ 3.000** | 2× a faixa PME |
-| 250 a 1.000 | **R$ 5.000** | acima de toda mensalidade que a casa já propôs |
-| acima de 1.000 | **R$ 8.000** | topo da faixa de WhatsApp Business API com volume alto |
-
-**A ordem de cálculo, com as regras que podem colidir:**
+O esforço deixou de formar o preço, mas **o preço não pode ficar abaixo do que custa entregar**.
 
 ```
-mensalidade = banda por volume V            ← V é o que DEFINE
-  piso:    ≥ 25% do contrato do ano 1 ÷ meses
-  (piso por custo, ≥ 3 × custo recorrente, só se a operação for incluída — exceção)
-  TETO:    teto por operação atendida       ← o teto GANHA de todos os pisos
+piso = semanas-analista × R$ 925      ← comparado com o ano 1 da ESSENCIAL
 ```
 
-⚠️ **Quando o teto morde, o contrato do ano 1 NÃO muda — muda só o corte.** A mensalidade para no
-teto e **o setup absorve a diferença**. O **gate 10** dispara para que alguém registre que a meta
-de recorrência não coube naquele cliente — é informação, não erro.
+- **Só calcule se houver dimensionamento** do validador técnico no card ou equipe declarada pelo PM.
+  Sem isso, escreva "piso não calculado — sem dimensionamento" e siga. ❌ Não estime a equipe a partir
+  do escopo: o backtest da casa mostrou que isso puxa todo projeto para o mesmo tamanho e erra o preço
+  em 50%.
+- `semanas-analista` = pessoas que **entregam** × semanas de **calendário**, incluindo as semanas de
+  prova da Poli. PM, Tech Lead e validador não contam.
+- **R$ 925** é a taxa média que a casa praticou nos projetos que vendeu, já com a coordenação. A casa
+  concluiu que ela é **baixa**: por isso é piso, e só piso.
+- **A Essencial abaixo do piso** (gate 11): o escopo é maior do que o nível da tabela sugere.
+  Reclassifique o nível (M1 → M2), ou tire item, ou o que falta é item novo pela taxa de construção.
 
-**Exemplo do conflito.** Setup de R$ 80.000 numa operação de 40 pessoas: o piso de 25% pediria
-R$ 2.222/mês, mas o teto do porte é R$ 1.500. Vale R$ 1.500 — ano 1 de R$ 98.000, MRR de 18%,
-gate 10 disparado **por limite de porte, não por desconto**.
-
-| Operação atendida | Teto de mensalidade | Acima deste setup, nem os 25% cabem |
-| --- | --- | --- |
-| até 50 | R$ 1.500 | R$ 54.000 |
-| 50 a 250 | R$ 3.000 | R$ 108.000 |
-| 250 a 1.000 | R$ 5.000 | R$ 180.000 |
-| acima de 1.000 | R$ 8.000 | R$ 288.000 |
-
-#### A escada de transição
-
-Os 25% são ponto de partida deliberado, não destino. **Suba 10 pontos por safra, e só quando as
-duas condições valerem:**
-
-| Condição para subir o piso | Por quê |
-| --- | --- |
-| **nenhum deal perdido por causa da mensalidade** na safra anterior, com motivo escrito | a perda é o instrumento, não o palpite |
-| **superfície a manter declarada** (nº de integrações e código sob medida por contrato) | com a operação repassada, a mensalidade é só manutenção e evolução — subir a fatia exige mostrar o que se mantém |
-
-**Teto da escada: 65%.** ⚠️ **A escada sobe por porte, não para a casa inteira:** numa operação de
-até 50 pessoas, 65% exigiria setup abaixo de ~R$ 9.700, ou seja, **65% só é realista em operação
-grande**. O teto de mensalidade manda sempre.
+**Sanidade de calendário.** A casa entrega em **6 a 12 semanas**. Fora disso, confira: abaixo de 6
+costuma faltar etapa (mobilização, acessos, go-live, treinamento); acima de 12 sobra escopo para uma
+entrega, e é caso de **vender por fase**.
 
 ---
 
-## Quanto arriscar no preço
+## A mensalidade
 
-**Suba, e acompanhe a taxa de perda POR PREÇO — não a taxa de perda, e não o preço.** A maior
-parte das perdas do enterprise acontece por autoridade (decisor fora da mesa), timing ou substituto
-nativo — e nenhum ajuste de preço recupera essas. Tratar os dois números como o mesmo levaria a
-cortar preço para resolver um problema de qualificação.
+🎯 **O que o NI cobra por mês é trabalho da casa, não licença e não consumo:**
 
-| Taxa de perda **por preço** | Leitura |
-| --- | --- |
-| 0% | o preço ainda está baixo. Suba de novo |
-| **20% a 40%** | **faixa saudável — o preço está encostando no teto** |
-| acima de 50% | passou. Volte um degrau, ou o problema é escopo, não preço |
+| Parte | O que é | Na proposta |
+| --- | --- | --- |
+| **sustentação corretiva** | bug, API de terceiro que mudou, modelo de IA aposentado ou que piorou | incluída, sem limite para corretiva |
+| **evolução** | melhorias e funcionalidade nova | **2 / 6 / 12 h por mês** conforme a opção. O que passar é termo aditivo, a R$ 1.600 por semana-analista |
+| **migração forçada** | troca de modelo de IA ou de versão de API por decisão do fornecedor | incluída **até 1 semana-analista por ano**; acima disso, orçada à parte |
+| ~~operação~~ | tokens, infra, conversas da Meta, APIs pagas | **fora: repasse ao cliente** |
 
-⚠️ **Motivo de perda auto-reportado subestima preço** — "timing" é mais confortável de escrever que
-"estava caro". Antes de creditar uma perda ao preço, elimine: decisor não acessível, sponsor que
-trocou no meio do ciclo, timing de fim de ano, proposta sem equipe declarada.
+❌ **"Novas features sob demanda" sem teto de horas é passivo ilimitado num valor fixo.** Toda
+proposta escreve o número de horas.
 
-⚠️ **A perda também não é monotônica no preço.** Onde a plataforma que o cliente já usa entrega o
-caso de uso (a IA nativa da Meta, do Google, do ERP), **nenhuma postura de preço ganha o deal** —
-nem abaixo do piso. É decisão de produto.
+**Por que a mensalidade fica acima dos 22% ao ano do mercado de software.** Manter IA custa mais que
+manter software comum: modelo aposentado com 60 dias de aviso, drift de qualidade entre versões, API
+de terceiro que muda. A mensalidade só se sustenta **se declarar isso**. Proposta que chama de
+"manutenção" o que é evolução faz o cliente comparar com contrato de sustentação e achar caro.
 
-### As três posturas
+### O repasse, e a opção de consumo incluso
 
-| | **1 · Ancorada em custo** | **2 · Ancorada em mercado** | **3 · Ancorada em valor** |
-| --- | --- | --- | --- |
-| Fórmula | base × R$ 1.300 | base × ITIP alvo × multiplicador | 10% a 20% do ganho anual declarado |
-| Argumento ao cliente | transparência: nosso esforço × nossa taxa | somos várias vezes mais baratos que software house | você ganha X, pagamo-nos com Y meses |
-| Risco de perder o deal | baixo | médio | alto |
-| Exige do NI | nada — só decidir | defender o múltiplo numa conversa | o cliente quantificar o ganho |
-| Quando usar | **exceção** — o cliente já recusou um número, ou nem o diagnóstico do escopo fechou | **padrão** | ganho declarado ≥ R$ 200k e área core |
+**Tokens, infra e APIs pagas são do cliente**, fora do ano 1. A proposta traz a cláusula de repasse,
+cobrindo a execução **e** o pós-projeto, e uma **estimativa mensal**, escrita como estimativa:
 
-⚠️ **A postura 1 é exceção e precisa de fato, não de impressão.** "Relação nova" e "cliente
-sensível a preço" descrevem praticamente todo lead da casa. Usada assim, a postura 1 vira o padrão
-pela porta dos fundos. Ela só se justifica quando **o cliente recusou um número concreto**, e a
-exceção vai registrada com o motivo.
+```
+repasse estimado/mês ≈ infra rateada + volume × custo por interação
+```
 
-### Alavancas que sobem o preço médio sem subir o risco de perder
+Custo medido: **Maísa**, R$ 0,111 por interação em token + infra de ~R$ 185/mês rateada + mensagens
+de template da Meta pela tabela oficial. **Plum e Ludi não medidos**: escreva "a medir no primeiro
+mês", não chute.
 
-**Menu de duas opções.** Proposta com escopo enxuto e escopo completo, lado a lado, muda a pergunta
-do cliente de "aceito ou não" para "qual dos dois".
+**Opção de consumo incluso** (para quem quer previsibilidade — e o comprador enterprise costuma
+querer):
 
-**Mensalidade obrigatória quando a solução fica rodando.** Zero com meses de acompanhamento
-inclusos é receita recorrente dada de graça.
+```
+mensalidade com consumo = mensalidade + repasse estimado × 1,15
+franquia de consumo     = volume estimado × 1,2
+excedente               = custo por interação × 1,15, cobrado no mês seguinte
+```
 
-**Desconto amarrado a prazo de decisão.** É a contrapartida mais barata que existe.
+Os 15% são a taxa de gestão de fornecedor que as normas brasileiras de agência admitem. Só ofereça
+**com custo medido** (hoje, só a Maísa); no Plum e no Ludi, a partir do quarto mês, com o custo real
+em mãos. ⚠️ Com consumo incluso, a conta de LLM, nuvem e WhatsApp fica no nome do NI: repassar vira
+cobrança, e o reajuste por câmbio (infra em dólar) tem de estar escrito.
 
-**Piloto pago antes do projeto cheio.** Reduz o risco percebido pelo cliente e permite preço maior
-no contrato principal.
+### Recorrência e revisão
 
-**A pergunta de ROI.** Abre a postura 3, a mais cara de todas, e não custa deal nenhum.
-
-❌ **O que NÃO fazer ainda: cobrança por resultado ou gainshare.** Exige medir o resultado, e a casa
-não tem telemetria por cliente. Cobrar por variável que não se mede é transferir risco para quem
-não pode absorvê-lo.
-
-## O modo de risco — escolhido no início, aplicado até o fim
-
-O vendedor escolhe **um dos três modos** no começo do cálculo, e ele vale para a proposta inteira.
-É o mesmo `ITIP alvo` da tabela de rotas, em três níveis:
-
-| Rota | 🛡️ Conservador | ⚖️ **Padrão** | 🔥 Agressivo |
-| --- | --- | --- | --- |
-| **configuração** | R$ 1.100 | **R$ 1.400** | R$ 1.700 |
-| **extensão** | R$ 1.200 | **R$ 1.600** | R$ 2.000 |
-| **motor + domínio** | R$ 1.300 | **R$ 1.800** | R$ 2.400 |
-
-Num projeto típico de 8 semanas × 3 analistas (24 sw, base 27,6), isso dá:
-
-| Rota | 🛡️ Conservador | ⚖️ Padrão | 🔥 Agressivo |
-| --- | --- | --- | --- |
-| configuração | R$ 30.400 | R$ 38.600 | R$ 46.900 |
-| extensão | R$ 33.100 | R$ 44.200 | R$ 55.200 |
-| motor + domínio | R$ 35.900 | R$ 49.700 | R$ 66.200 |
-
-*Para comparar: o piso nesse tamanho é R$ 22.200.*
-
-**🛡️ Conservador** — ponto médio entre o praticado (R$ 805) e o alvo da rota. Não é "voltar ao
-preço antigo", é o degrau mais baixo que este modelo aceita. Use quando: **o deal precisa fechar**
-(meta de safra, primeira venda num setor, case que vocês querem), concorrente conhecido na mesa, ou
-cliente que já disse que orçamento é problema. **Escreva por que escolheu** — conservador sem motivo
-escrito vira o padrão pela porta dos fundos.
-
-**⚖️ Padrão** — o alvo da rota. É o default e **não precisa de justificativa**.
-
-**🔥 Agressivo** — o nível que a casa já viu passar em motor + domínio sem recusa por preço.
-Em extensão, não testado. ⚠️ **Em configuração, fica acima de um preço já recusado por caro** — é
-o território com um "não" conhecido.
-
-**Exigências do modo agressivo**, as duas obrigatórias:
-1. **a pergunta de ROI respondida pelo cliente** — sem ganho declarado, não há argumento para o
-   número, e o vendedor vai defender o preço com a própria opinião;
-2. **decisor identificado e acessível** — preço alto com decisor ausente é a pior combinação.
-
-Se qualquer uma faltar, caia para o padrão.
-
-| Situação | Modo |
-| --- | --- |
-| motor + domínio, decisor acessível, ganho declarado | 🔥 agressivo |
-| caso normal, sem sinal forte nos dois sentidos | ⚖️ padrão |
-| rota configuração acima de R$ 1.400 | ⚖️ padrão — ali existe um "não" medido |
-| deal que precisa fechar, ou concorrente na mesa | 🛡️ conservador, **com motivo escrito** |
-| cliente sem orçamento declarado, ou produto com substituto nativo | nenhum: **não é deal de preço** |
-
-⚠️ **O modo mexe só no `ITIP alvo`.** Piso, teto de payback, multiplicador, piso de recorrência e
-teto de mensalidade por porte **valem igual nos três** — são limites, não preferências.
-
-## A janela de três meses, e por que o ITIP sozinho não basta
-
-O NI entrega em **no máximo ~3 meses** (propostas de 6 a 12 semanas, mediana 8). Preço por esforço
-multiplica semanas por taxa — então **a janela curta põe teto de construção no preço**: o maior
-projeto que a casa já fez (40 sw) dá R$ 82.800 de referência na rota motor + domínio. **E cobrar
-por esforço pune o reuso**: quanto melhor fica o motor do Plum, menos semanas o projeto leva — e
-menos a casa cobra.
-
-**Três saídas, em ordem de impacto:**
-
-**1. Recorrência — e a janela curta é uma vantagem aqui.** O projeto acaba em 10 semanas; a receita
-não precisa acabar junto. Um setup de R$ 45.000:
-
-| Fatia de MRR | Mensalidade | Ano 1 | Acumulado em 3 anos |
-| --- | --- | --- | --- |
-| 25% (piso de hoje) | R$ 1.250 | R$ 60.000 | R$ 90.000 |
-| 45% (um degrau) | R$ 3.068 | R$ 81.818 | R$ 155.455 |
-| **65% (teto da escada)** | **R$ 6.964** | **R$ 128.571** | **R$ 295.714** |
-
-⚠️ **Mas os 65% exigem porte**: a mensalidade de R$ 6.964 só cabe em operação acima de 1.000
-pessoas atendidas. Em operação pequena, a saída é a pergunta de ROI e a venda por fase.
-
-**2. A pergunta de ROI, obrigatória.** É a única rota que quebra o teto do esforço, porque não
-depende de horas: um projeto de 8 semanas que economiza R$ 600k/ano vale R$ 60–120k no modo
-ROI-âncora, contra os ~R$ 30k que o esforço daria. **O cliente precisa declarar o número.**
-
-**3. Vender fase, não projeto.** Três meses é a janela de **uma entrega**, não da relação. Desenhe a
-fase 2 **antes** de fechar a fase 1, para que ela exista como escopo e preço e não como intenção.
-
-❌ **O que NÃO resolve:** subir o ITIP para compensar a janela. A saída é mudar **o que** se cobra
-(recorrência, valor, fase), não inflar a taxa.
+- **Nenhuma proposta sai com mensalidade zero**, e **mensalidade × 12 ≥ 25% do ano 1** (gate 10).
+  Com as tabelas da v6 isso quase sempre passa; se não passar, alguém cortou a mensalidade.
+- **Revisão semestral:** mensalidade contra uso e escopo reais. Sobe ou desce de faixa, por escrito.
+- **Cobrança mensal, não anual antecipada.** Quem paga todo mês usa de forma estável e renova mais.
 
 ---
 
-## Os dez gates
+## A forma do contrato
 
-Qualquer um que dispare, escale antes de apresentar.
+**Risco nunca vira margem. Vira cláusula.**
+
+| Risco | Cláusula |
+| --- | --- |
+| sistema com credencial `parceria`, `bloqueado` ou não documentada | item condicionado, data condicionada à liberação — ou **fase 0** |
+| escopo que o cliente ainda não fechou, dado de qualidade desconhecida | **fase 0 paga**: diagnóstico curto, com preço fechado, que entrega a especificação e o dimensionamento |
+| pedido novo no meio do projeto | **controle de mudança**: trocar um requisito por outro de mesmo esforço sai sem custo; acréscimo é termo aditivo, pela taxa de construção |
+| capacidade do time na virada de safra | janela de entrega declarada, não data cravada |
+| término antecipado pelo cliente | taxa de saída escrita |
+
+**Fase 0.** `semanas-analista da fase × R$ 1.600`, tipicamente **R$ 5–8 mil**, **abatida do setup**
+se o cliente fechar a implementação em 30 dias. Use quando houver integração com sistema cuja API
+ninguém confirmou, ou quando menos da metade do escopo estiver definida: é o formato que a pesquisa
+recomenda para fornecedor jovem, que é quem mais absorve estouro em preço fechado.
+
+**Item condicionado entra na proposta com a condição escrita ao lado, ou não entra.**
+
+**Vender fase, não projeto.** Três meses é a janela de uma entrega, não da relação. Desenhe a fase 2
+(com escopo e preço) **antes** de fechar a fase 1: é ela que a Essencial empurra para frente.
+
+**Lista do que está fora do escopo**, sempre, na proposta.
+
+---
+
+## O histórico
+
+As propostas que a casa já fez — vendidas e perdidas — são **evidência de como clientes reagiram a
+preços**, não régua. Duas regras:
+
+1. **Use a reação, não o preço.** "Um cliente de Maísa M1 recusou por caro um setup acima da
+   Completa" é informação útil. "Cobramos X de um cliente parecido, então cobre X" não é: os preços
+   da base saíram, na avaliação da própria casa, abaixo do que deviam.
+2. **Ausência de objeção não é aprovação.** Muitos deals morreram antes do preço (decisor, timing,
+   substituto). Só conta como teto o "caro demais" dito pelo cliente.
+
+A reação observada por produto e por nível da tabela fica na versão interna da skill, com a base de
+propostas do núcleo — não neste repositório público.
+
+---
+
+## Os gates
+
+Qualquer um que dispare, **escale antes de apresentar**.
 
 | # | Gate | Por quê |
 | --- | --- | --- |
-| 1 | **semanas-analista > 40**, ou contrato do ano 1 > **R$ 90.000** | maior que qualquer projeto que a casa já entregou |
-| 2 | **aderência duvidosa** — no Passo 0, o balde "novo" é maior que "pronto" + "perto" juntos | é produto novo disfarçado de enterprise. Capacidade que a casa já fez em outro produto conta como "perto", não como faltante |
+| 1 | **ano 1 da Recomendada > R$ 120.000**, ou prazo > 12 semanas | maior que qualquer projeto que a casa já entregou |
+| 2 | **aderência duvidosa** — o balde "novo" é maior que "pronto" + "perto" juntos | é produto novo disfarçado de enterprise |
 | 3 | integração com credencial **`parceria`**, **`bloqueado`** ou **não documentada** | a data não está nas mãos do NI |
-| 4 | **provedor-gestor** (Booksy, Trinks, Fresha) | não cabe nas portas atuais: porta nova + mapa de catálogo |
+| 4 | **provedor-gestor** (Booksy, Trinks, Fresha) | não cabe nas portas atuais |
 | 5 | âncora **sem mantenedor declarado** | promete manutenção que a casa não tem |
 | 6 | compromisso **> 12 meses** ou SLA com multa | o time rotaciona a cada 1–2 anos |
 | 7 | contrato exige **repositório ou dado segregado** | muda o custo de versionamento e de operação |
-| 8 | **isolamento por pessoa** exigido | autorização por linha é desenvolvimento novo e é requisito de segurança |
-| 9 | **modo ROI-âncora ativo** | o preço descolou do piso |
-| 10 | **mensalidade zero, ou MRR abaixo de 25% do contrato do ano 1** | é a meta de recorrência do núcleo (§ Piso de recorrência). ⚠️ Ao escalar, **diga qual dos dois motivos**: se foi o **teto por porte** é informação, não erro; se foi **desconto ou esquecimento**, é decisão de quem responde pela receita, não do vendedor |
+| 8 | **isolamento por pessoa** exigido | desenvolvimento novo e requisito de segurança |
+| 9 | **modo ROI-âncora ativo** | o preço descolou da tabela |
+| 10 | **mensalidade zero, ou MRR abaixo de 25% do ano 1** | meta de recorrência do núcleo. Diga o motivo: caixa do cliente é informação; desconto ou esquecimento é decisão de quem responde pela receita |
+| 11 | **preço fora da tabela** — desconto acima de 15%, Essencial abaixo do piso de esforço, ou preço acima da Completa sem ROI-âncora | a tabela é a âncora; sair dela é decisão, não improviso |
+| 12 | **alerta crítico da pesquisa** — recuperação judicial, política corporativa que exclui o NI, plataforma atual que entrega o núcleo de fábrica | preço nenhum resolve; às vezes nem vale apresentar |
+| 13 | **captura acima de 30%** do ganho declarado | o preço passou do que o valor sustenta: corte escopo |
 
-Os gates 3 e 4 são de **prazo**, não de preço, e a saída deles não é cobrar mais: é tirar o item do
-escopo fechado e transformá-lo em etapa condicionada.
+Os gates 3 e 4 são de **prazo**, não de preço: a saída é item condicionado ou fase 0, nunca cobrar
+mais.
 
-## Política de desconto
+## A política de desconto
 
-**Desconto só existe em troca de contrapartida**, e a contrapartida vai escrita na proposta: caso
-público com nome e números, referência ativa, pagamento antecipado, escopo reduzido, ou prazo
-folgado.
+**Desconto só existe em troca de contrapartida escrita:** caso público com nome e números,
+referência ativa, pagamento antecipado, prazo de decisão curto, escopo reduzido.
 
 | Faixa | Quem aprova |
 | --- | --- |
 | até 10% | vendedor |
 | 10% a 15% | com contrapartida escrita |
-| acima de 15% | escala — é gate |
+| acima de 15% | escala — gate 11 |
 
-**Baixar preço não compra o sim.** Perder por preço é quase sempre orçamento ou relacionamento, não
-o número.
+**Negocie termo, não preço:** parcelas, entrada, prazo de pagamento e escopo são negociáveis; o preço
+por unidade da tabela não. Cliente que acha caro tem a Essencial; baixar a Recomendada ensina o
+cliente a pedir desconto.
 
-## Risco nunca vira margem
+## Na proposta: o que a pesquisa de comportamento manda
 
-Risco não é multiplicador — é cláusula.
+1. **Faça a primeira oferta**, com o número preciso que sai do modelo — R$ 30.000 de tabela, não
+   "uns 30 mil". Número preciso com memória de cálculo é menos negociado.
+2. **Três opções, lado a lado**, com a Recomendada marcada.
+3. **Compare a mensalidade com o custo da alternativa** (uma atendente, um analista), não com preço
+   de software.
+4. **Nunca diga faixa de preço antes de dimensionar.** Faixa dita na primeira reunião vira teto na
+   cabeça do cliente e âncora na cabeça de quem estima.
 
-| Risco | Cláusula, não preço |
-| --- | --- |
-| credencial de terceiro pendente | etapa separada, data condicionada à liberação |
-| dado do cliente em qualidade desconhecida | etapa de diagnóstico com saída antecipada |
-| escopo que o cliente ainda não fechou | item condicionado, com a condição escrita ao lado |
-| capacidade do NI na virada de safra | janela de entrega declarada, não data cravada |
-
-Item condicionado **entra na proposta com a condição escrita ao lado, ou não entra**.
+---
 
 ## Limites declarados desta versão
 
-- **A forma foi validada, os níveis não.** `semanas-analista × ITIP` reproduz a prática da casa,
-  mas foi ajustado sobre poucos pontos. Os ITIP alvo, o rateio e o `f_porte` até 1,50 são
-  **decisão do núcleo**, não medição.
-- **O elo fraco é quem decide a equipe.** Com a equipe declarada pelo PM, o piso erra ~15%; com a
-  equipe estimada a partir do escopo, ~50%. Por isso o Passo 4 trata a equipe como pergunta.
-- **O fator de coordenação vem de um projeto só**, e o validador de CS não está em conta nenhuma.
-- **Custo de operação do Plum, do Ludi e do Smiller não foi medido.**
-- **Nenhuma implementação foi medida ponta a ponta** — sabe-se preço, prazo e equipe declarada, não
-  o esforço real gasto.
+- **As tabelas são decisão ancorada em mercado, não medição.** Os níveis saíram das faixas públicas
+  de [`mercado.md`](mercado.md), posicionados no meio delas. Nenhuma proposta foi feita com a v6 ainda:
+  a primeira safra é o teste, e **a opção escolhida em cada proposta é o que vai calibrar**.
+- **Faixas de mercado brasileiras de agente de IA vêm de poucos fornecedores** que publicam preço, e
+  várias de blog. Enterprise quase nunca é público.
+- **O Ludi Pedagógico não tem resultado medido**, e por isso fica abaixo do topo do mercado.
+- **O adicional de volume da Maísa, os R$ 400 por conector do Plum, o pacote enterprise de 15% e
+  as horas de evolução por opção são decisões**, derivadas por conta nossa, não medidas.
+- **Custo por consulta do Plum e infra do Ludi não foram medidos**: sem eles não há opção de consumo
+  incluso nesses dois.
+- **O piso de R$ 925 é da safra que a casa julga barata.** Ele protege contra regressão, não diz
+  quanto cobrar.

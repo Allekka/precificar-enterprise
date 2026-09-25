@@ -1,11 +1,11 @@
 # precificar-enterprise
 
-Skill de precificação das versões **enterprise** dos produtos do Núcleo de Inovação da Poli Júnior —
-as que passam por implementação e adaptação ao que o lead precisa. O plug-and-play tem preço de
+Skill de precificação das versões **enterprise** de três produtos do Núcleo de Inovação da Poli
+Júnior — **Maísa, Plum e Ludi** —, as que passam por implementação e adaptação ao que o lead precisa. O plug-and-play tem preço de
 tabela e não é orçado aqui.
 
 Este repositório é **público e só de leitura**: qualquer um baixa, só o mantenedor altera. Ele
-leva o necessário para usar e mexer na skill — o fluxo, o formulário e o modelo. A base de
+leva o necessário para usar e mexer na skill — o fluxo, o formulário, o modelo, as faixas de mercado e o roteiro de pesquisa da empresa. A base de
 propostas e as medições com dados de clientes ficam fora, de propósito.
 
 ## Como baixar
@@ -25,6 +25,10 @@ Quem vende usa o **claude.ai**, e é para lá que esta skill vai. São quatro pa
 3. Abra **Settings → Features → Skills** e clique em **Add / Upload skill**. Em algumas contas o
    caminho aparece como **Customize → Skills**; é a mesma tela.
 4. Escolha o `.zip`. Se a skill aparecer na lista como `precificar-enterprise`, acabou.
+
+**Deixe a busca na web ligada.** Desde a v6 a skill pesquisa a empresa do cliente antes de
+precificar; sem busca, ela pede as respostas a você. Se o conector do ValidaNI estiver disponível na
+sua conta, ligue também: a skill lê o card direto.
 
 Depois disso **não precisa chamar a skill pelo nome.** Jogue as anotações da reunião no chat e peça
 o preço — a descrição dela já cobre "montar proposta", "orçar cliente" e "quanto custa".
@@ -51,9 +55,11 @@ num dos dois lados.
 
 | Arquivo | O que é | Quem lê |
 | --- | --- | --- |
-| [`SKILL.md`](SKILL.md) | o fluxo: aderência → rota → âncora → dimensionar → preço → gates → saída | o agente |
+| [`SKILL.md`](SKILL.md) | o fluxo: ler o card → aderência → pesquisar a empresa → qualificar → nível → três opções → conferências → gates → saída | o agente |
 | [`formulario.md`](formulario.md) | o que o comercial joga, e o que fazer quando não souber um campo | **o comercial** |
-| [`modelo.md`](modelo.md) | fonte da verdade dos números: produtos, ITIP, rateio, multiplicador, camadas do Plum, mensalidade, gates, desconto | o agente, e quem revisa o modelo |
+| [`modelo.md`](modelo.md) | fonte da verdade dos números: as tabelas de Maísa, Plum e Ludi, as três opções, valor, piso, mensalidade, contrato, gates, desconto | o agente, e quem revisa o modelo |
+| [`mercado.md`](mercado.md) | o que o mercado cobra por produto, com os links — a âncora das tabelas | o agente, e **o comercial**, para defender o preço |
+| [`pesquisa-empresa.md`](pesquisa-empresa.md) | como pesquisar a empresa do cliente na internet, e o que isso muda no preço | o agente |
 | [`empacotar.py`](empacotar.py) | gera o `.zip` do claude.ai e confere o frontmatter e os links | quem mantém |
 
 **Se você vende:** leia o [`formulario.md`](formulario.md) inteiro uma vez — são os campos que você
@@ -76,6 +82,10 @@ perda ou dado interno entra aqui** — este repositório é público.
 
 ---
 
-**Versão 5 · 25/09/2026.** O Passo 0 é triagem de facilidade (pronto / perto / novo), não portão de
-catálogo; integração com API de terceiro custa 4 semanas-analista por sistema (PERT 2/4/6); tokens,
-infra e APIs pagas são repasse ao cliente, fora do preço.
+**Versão 6 · 25/09/2026.** Escopo reduzido a Maísa, Plum e Ludi. O preço parte de uma tabela por
+produto ancorada no mercado ([`mercado.md`](mercado.md)), na unidade que o mercado usa — complexidade
+e conversas na Maísa, sistemas e franquia de perguntas no Plum, aluno por ano no Ludi —, e toda
+proposta sai com três opções (Essencial, Recomendada, Completa). O esforço vira piso e taxa de item
+novo; o valor confere a captura (alvo 10–20% do ganho declarado, máximo 30%); passo novo de pesquisa
+da empresa na internet ([`pesquisa-empresa.md`](pesquisa-empresa.md)). Saíram o ITIP por rota e por
+modo de risco, o multiplicador e o teto de payback de 6 meses.
