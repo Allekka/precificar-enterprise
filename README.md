@@ -55,9 +55,9 @@ num dos dois lados.
 
 | Arquivo | O que é | Quem lê |
 | --- | --- | --- |
-| [`SKILL.md`](SKILL.md) | o fluxo: ler o card → aderência → pesquisar a empresa → qualificar → nível → três opções → conferências → gates → saída | o agente |
+| [`SKILL.md`](SKILL.md) | o fluxo: ler o card → aderência → pesquisar a empresa → qualificar → nível → preço (passo a passo do produto) → conferências → gates → saída | o agente |
 | [`formulario.md`](formulario.md) | o que o comercial joga, e o que fazer quando não souber um campo | **o comercial** |
-| [`modelo.md`](modelo.md) | fonte da verdade dos números: as tabelas de Maísa, Plum e Ludi, as três opções, valor, piso, mensalidade, contrato, gates, desconto | o agente, e quem revisa o modelo |
+| [`modelo.md`](modelo.md) | fonte da verdade dos números: as tabelas e o passo a passo de Maísa, Plum e Ludi, valor, piso, mensalidade, contrato, gates, desconto | o agente, e quem revisa o modelo |
 | [`mercado.md`](mercado.md) | o que o mercado cobra por produto, com os links — a âncora das tabelas | o agente, e **o comercial**, para defender o preço |
 | [`pesquisa-empresa.md`](pesquisa-empresa.md) | como pesquisar a empresa do cliente na internet, e o que isso muda no preço | o agente |
 | [`empacotar.py`](empacotar.py) | gera o `.zip` do claude.ai e confere o frontmatter e os links | quem mantém |
@@ -81,6 +81,11 @@ Atualize a versão no rodapé deste arquivo. **Nada com nome de cliente, valor d
 perda ou dado interno entra aqui** — este repositório é público.
 
 ---
+
+**Versão 7 · 25/09/2026.** A proposta é **uma só** — um setup e uma mensalidade —, porque o escopo
+chega decidido do mapeamento; o que não couber vira fase 2 com preço escrito. Na Maísa, a decisão
+**sistema do cliente × o nosso**, função por função, define o nível. Cada produto tem um **passo a
+passo** da conta em [`modelo.md`](modelo.md).
 
 **Versão 6 · 25/09/2026.** Escopo reduzido a Maísa, Plum e Ludi. O preço parte de uma tabela por
 produto ancorada no mercado ([`mercado.md`](mercado.md)), na unidade que o mercado usa — complexidade

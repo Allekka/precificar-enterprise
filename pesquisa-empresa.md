@@ -53,9 +53,9 @@ Cinco perguntas, e a saída traz as cinco com fonte.
 
 | Sinal | Onde | O que muda |
 | --- | --- | --- |
-| Expansão, novas unidades, captação, aquisição feita | notícias dos últimos 12 meses, site, LinkedIn | ✅ vale oferecer a opção Completa e desenhar a fase 2 |
+| Expansão, novas unidades, captação, aquisição feita | notícias dos últimos 12 meses, site, LinkedIn | ✅ vale desenhar a fase 2 já na proposta |
 | Vagas abertas para atendimento, recepção, dados | páginas de vagas, LinkedIn | ✅ dor real e âncora de valor: o salário da vaga é o custo da alternativa |
-| Demissões, fechamento de unidades, queda de receita | notícias | ⚠️ verba apertada: comece pela Essencial, entrada menor, parcelas curtas |
+| Demissões, fechamento de unidades, queda de receita | notícias | ⚠️ verba apertada: escopo menor agora (o resto na fase 2), entrada menor, parcelas curtas |
 | Fusão ou aquisição em andamento, troca de diretoria | notícias, comunicado | ⚠️ sponsor pode trocar no meio do ciclo: confirme quem aprova |
 | Recuperação judicial, falência, protestos relevantes | notícias, consulta de processos | 🔴 **gate 12** |
 
@@ -97,8 +97,8 @@ Hipóteses para **construir a conta de ganho com o cliente**, nunca para precifi
 | --- | --- |
 | porte ou volume confirmados | escolhe a faixa da tabela do produto (conversas, perguntas, alunos), **a confirmar com o cliente** |
 | requisitos enterprise prováveis (grupo, S.A., regulado) | vira pergunta; se confirmados, **pacote enterprise** |
-| empresa em expansão | oferecer a Completa e desenhar a fase 2 antes de fechar a fase 1 |
-| verba apertada ou momento ruim | abrir pela Essencial; termo (entrada, parcelas), não preço |
+| empresa em expansão | desenhar a fase 2 (novas unidades, novos módulos) antes de fechar a fase 1 |
+| verba apertada ou momento ruim | escopo menor agora, o resto na fase 2; negociar termo (entrada, parcelas), não preço |
 | alternativa barata que resolve | a proposta tem de mostrar o diferencial em reais, ou é caso de plug-and-play ou de não vender |
 | alerta crítico (🔴 acima) | **gate 12**: escale antes de apresentar |
 

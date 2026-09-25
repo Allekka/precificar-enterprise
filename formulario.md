@@ -12,7 +12,7 @@ Sem eles não sai preço, e a skill não deve inventá-los.
 | --- | --- | --- |
 | **todos** | **O que o cliente pediu, item por item** | decide o produto, o nível da tabela e o que é item novo |
 | **todos** | **Quais sistemas do cliente a solução consulta ou alimenta, pelo nome** | cada sistema é uma linha de preço e uma credencial com prazo próprio, que não é do NI |
-| **Maísa** | **Conversas por mês** e **quantas unidades**, com regra igual ou diferente | o volume dá o adicional e o repasse; unidades com regra diferente sobem o nível |
+| **Maísa** | **Conversas por mês**, **quantas unidades** (regra igual ou diferente) e, **para cada função** (agenda, cadastro, CRM, cobrança, fiscal), **sistema do cliente ou o nosso** | a decisão de sistema define o nível; o volume dá o adicional e o repasse |
 | **Plum** | **Perguntas por mês** (estime com ele: quantas pessoas × quantas vezes por semana) e **quem pode ver o quê** | a franquia define a mensalidade; isolamento por pessoa é uma linha inteira e um gate |
 | **Ludi** | **Alunos ativos** e **quais módulos** (Atendimento, Pedagógico) | a unidade de preço do Ludi é o aluno |
 
@@ -114,7 +114,7 @@ proposta como premissa e protege o time; lacuna esquecida vira retrabalho não f
 2. **Empresa** — o que a pesquisa achou, com fonte e data, e o que não achou
 3. **Aderência** — produto, e o pedido em pronto / perto / novo
 4. **Nível** da tabela e a unidade
-5. **Três opções** — Essencial, Recomendada, Completa — com setup, mensalidade e ano 1
+5. **O preço** — setup, mensalidade e ano 1 —, com cada linha da conta do produto, e a fase 2 se houver
 6. **Repasse estimado**, e a opção de consumo incluso quando houver custo medido
 7. **Conferências** — valor, alternativa, piso, recorrência — com as contas
 8. **Gates disparados** e o que fazer com cada um

@@ -1,4 +1,4 @@
-# Modelo de precificação enterprise do NI — v6
+# Modelo de precificação enterprise do NI — v7
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
 dois divergirem, **este arquivo está certo**.
@@ -41,54 +41,52 @@ que se pratica) e o teto de mensalidade por porte (substituído pelas faixas de 
 tokens e infra ao cliente, a meta de recorrência (MRR ≥ 25% do ano 1), a regra do cliente-âncora, a
 política de desconto e o princípio de que **risco vira cláusula, não margem**.
 
+**Na v7 (mesmo dia), a proposta voltou a ser uma só.** A v6 saía com três opções (Essencial,
+Recomendada, Completa). Mas o escopo chega decidido do mapeamento — na Maísa, inclusive se cada
+função usa o sistema do cliente ou o nosso —, e três versões do mesmo escopo só mudariam o nome.
+Agora é **um setup e uma mensalidade**, com a fase 2 desenhada para o que não couber, e cada produto
+tem um **passo a passo** da conta.
+
 ---
 
 ## Como o preço se forma
 
 ```
-Toda proposta sai com TRÊS OPÇÕES — Essencial, Recomendada, Completa.
+Uma proposta, um preço: um setup e uma mensalidade.
 
-para cada opção:
-  setup        = tabela do produto                    ← Maísa por complexidade; Plum por linha;
+  setup        = tabela do produto                    ← Maísa por nível; Plum por linha;
                + itens novos × taxa de construção        Ludi = implantação + integrações
-               (+ 15% se houver pacote enterprise)
-  mensalidade  = tabela do produto                    ← a unidade do mercado: conversas,
-               (+ adicionais: volume, conectores)        perguntas, alunos
+               (× 1,15 se houver pacote enterprise)
+  mensalidade  = tabela do produto + adicionais       ← a unidade do mercado: conversas,
+                                                         perguntas, alunos
   ano 1        = setup + mensalidade × 12
   repasse      = tokens + infra + APIs pagas, pagos pelo cliente, FORA do ano 1
 
 conferências, nesta ordem:
-  valor        captura = ano 1 da Recomendada ÷ ganho anual declarado   alvo 10–20% · máx. 30%
+  valor        captura = ano 1 ÷ ganho anual declarado        alvo 10–20% · máx. 30%
   alternativa  o que o cliente faria sem o NI, e quanto custa
-  piso         ano 1 da Essencial ≥ semanas-analista × R$ 925            (se houver dimensionamento)
-  recorrência  mensalidade × 12 ≥ 25% do ano 1                           gate 10
+  piso         ano 1 ≥ semanas-analista × R$ 925               (se houver dimensionamento)
+  recorrência  mensalidade × 12 ≥ 25% do ano 1                 gate 10
 ```
 
-**O vendedor não escolhe mais um "modo de risco".** As três opções fazem esse trabalho, e melhor: o
-cliente se autosseleciona, a opção do meio ganha pelo efeito compromisso, e a de cima serve de
-âncora. **Qual opção o cliente escolheu é o dado mais valioso que a casa pode registrar**: é
-preferência revelada, e com poucos deals é a única medida honesta de disposição a pagar.
+**Por que uma proposta só, e não um menu.** O escopo chega decidido na proposta: o mapeamento técnico
+já definiu o que entra e, na Maísa, se cada função usa o **sistema do cliente** ou **o nosso**. Com
+escopo e arquitetura fixos, não há o que variar entre opções além do nome. Então a proposta traz **um
+setup e uma mensalidade**, e o que o cliente não puder pagar agora vira **fase 2, com preço escrito**.
 
-### As três opções
+**O que toda mensalidade inclui, nos três produtos:**
 
-As três têm de ser lucrativas, ou seja, estar acima do piso. **Nenhuma é chamariz.** O que muda entre
-elas é **escopo e garantia**, não o nome.
+| | Incluído |
+| --- | --- |
+| Sustentação corretiva | bug, API de terceiro que mudou, modelo de IA aposentado ou que piorou — sem limite |
+| Evolução | **6 h por mês**. O que passar é termo aditivo, pela taxa de construção |
+| Migração forçada | troca de modelo de IA ou de versão de API por decisão do fornecedor, até 1 semana-analista por ano |
+| Suporte | resposta em **1 dia útil** |
+| Acompanhamento pós go-live | **4 semanas** (no setup) |
+| Relatório mensal de resultado | horas poupadas, conversas resolvidas, perguntas respondidas |
 
-| | **Essencial** | **Recomendada** ⭐ | **Completa** |
-| --- | --- | --- | --- |
-| Escopo | o núcleo do pedido. O que é "perto" ou "novo" e não é essencial vai para a fase 2, **com preço já escrito** | o pedido inteiro | o pedido + o que reduz o risco do cliente: unidades, canais ou integrações a mais, e cobertura maior de domínio |
-| Evolução incluída na mensalidade | 2 h/mês | 6 h/mês | 12 h/mês |
-| Suporte | resposta em 2 dias úteis | 1 dia útil | 4 h úteis para incidente crítico, **sem multa** (gate 6) |
-| Acompanhamento pós go-live | 2 semanas | 4 semanas | 8 semanas |
-| Relatório mensal de resultado | — | ✅ | ✅, com revisão trimestral |
-
-🎯 **A Recomendada é o pedido do cliente.** Não infle a Completa para fazer a Recomendada parecer
-barata, nem corte da Recomendada o que ele pediu para ela caber no bolso: se não cabe, a Essencial
-existe para isso.
-
-🎯 **O relatório mensal não é enfeite.** Quem vê o ganho todo mês usa mais e renova mais; agente de
-IA pouco usado não renova. Ele mostra horas poupadas, conversas resolvidas, perguntas respondidas —
-e é o que alimenta a pergunta de valor na renovação.
+🎯 **O relatório mensal não é enfeite.** Quem vê o ganho todo mês usa mais e renova mais; agente de IA
+pouco usado não renova. E é o que alimenta a pergunta de valor na renovação.
 
 ---
 
@@ -134,38 +132,66 @@ plug-and-play**: enterprise é para o que a prateleira não faz.
 
 ## Maísa enterprise
 
-**Formato:** setup por complexidade + mensalidade de sustentação e evolução + repasse de tokens, infra
-e Meta a custo. **Referência de mercado:** agente de WhatsApp sob medida, setup de R$ 8–20 mil
-(simples), R$ 20–40 mil (médio) e R$ 40–80 mil (complexo) (Forja; Blip); manutenção de R$ 390–800/mês
-sem tokens (Zap Trend); plataforma mid-market de R$ 2.500–4.400/mês com IA inclusa (Octadesk).
-Detalhe em [`mercado.md`](mercado.md) §1.
+**Formato:** setup por nível de complexidade + mensalidade + repasse de tokens, infra e Meta a custo.
+**Referência de mercado:** agente de WhatsApp sob medida, setup de R$ 8–20 mil (simples), R$ 20–40
+mil (médio) e R$ 40–80 mil (complexo) (Forja; Blip); manutenção de R$ 390–800/mês sem tokens (Zap
+Trend); plataforma mid-market de R$ 2.500–4.400/mês com IA inclusa (Octadesk). A tabela fica no meio
+de cada faixa ([`mercado.md`](mercado.md) §1).
 
-### A complexidade
+### A decisão que vem antes: o sistema deles ou o nosso
 
-| Nível | O que cabe | Sinal de reconhecimento |
+Para cada função que a Maísa toca — **agenda, cadastro de clientes ou pacientes, CRM, cobrança, nota
+fiscal** —, o mapeamento já decidiu se ela usa **o sistema que o cliente tem** ou **o da própria
+Maísa**. É essa decisão que define o nível:
+
+| A função usa… | Conta como | Por quê |
 | --- | --- | --- |
-| **M1 · padrão** | atendimento, FAQ, agendamento em agenda de armazenamento, lembretes, handoff para humano. Uma regra de negócio para todas as unidades. Nenhum sistema do cliente além da agenda | outro cliente do mesmo segmento usaria igual, trocando o texto |
-| **M2 · integrada** | M1 + **1 ou 2 sistemas** do cliente (CRM, ERP, sistema de gestão, emissor fiscal), **ou** um fluxo próprio (qualificação de lead com passagem ao comercial, cobrança, pós-venda), **ou** várias unidades com regras diferentes | "quando o lead responder X, cria no CRM e avisa o vendedor" |
-| **M3 · complexa** | **3 ou mais sistemas**, ou mais de um canal, ou vários fluxos próprios ao mesmo tempo | a lista de integrações não cabe numa frase |
+| **o nosso** (agenda, cadastro e painel da Maísa) | nada a mais — é o produto | o cliente adota o que já existe. **Importação inicial** de dados (planilha de pacientes, lista de clientes) já está no setup |
+| **Google Calendar ou Outlook do cliente** | nada a mais | agenda de armazenamento é adapter pronto |
+| **o sistema do cliente** (gestão da clínica, ERP, CRM, emissor fiscal) | **1 sistema** | cada um é uma integração com credencial e prazo próprios |
+| **agenda de provedor-gestor** (Booksy, Trinks, Fresha) | gate 4 | não cabe nas portas atuais |
+
+⚠️ **Se a decisão ainda não foi tomada, não chute: pergunte.** Se ela depender do cliente, a
+proposta sai com o nível do "nosso" e a integração como **item condicionado**, com o preço escrito
+ao lado.
+
+### O nível
+
+| Nível | O que cabe |
+| --- | --- |
+| **M1 · padrão** | atendimento, FAQ, agendamento, lembretes, handoff para humano — tudo no sistema da Maísa ou em agenda de armazenamento. Uma regra de negócio para todas as unidades |
+| **M2 · integrada** | M1 + **1 ou 2 sistemas do cliente**, **ou** um fluxo próprio (qualificação de lead com passagem ao comercial, cobrança, pós-venda), **ou** várias unidades com regras diferentes |
+| **M3 · complexa** | **3 ou mais sistemas do cliente**, ou mais de um canal, ou vários fluxos próprios ao mesmo tempo |
 
 Na dúvida entre dois níveis, **fique no de baixo** e escreva o porquê. Item "novo" (ninguém da casa
-fez) **não sobe o nível**: entra à parte, pela taxa de construção (§ Itens novos).
+fez) **não sobe o nível**: entra à parte, pela taxa de construção.
 
 ### A tabela
 
-| | Essencial | **Recomendada** | Completa |
-| --- | --- | --- | --- |
-| **Setup M1** | R$ 10.000 | **R$ 14.000** | R$ 18.000 |
-| **Setup M2** | R$ 22.000 | **R$ 30.000** | R$ 38.000 |
-| **Setup M3** | R$ 42.000 | **R$ 55.000** | R$ 68.000 |
-| **Mensalidade M1** | R$ 800 | **R$ 1.100** | R$ 1.500 |
-| **Mensalidade M2** | R$ 1.400 | **R$ 1.900** | R$ 2.500 |
-| **Mensalidade M3** | R$ 2.400 | **R$ 3.200** | R$ 4.000 |
+| Nível | Setup | Mensalidade |
+| --- | --- | --- |
+| **M1** | **R$ 14.000** | **R$ 1.100** |
+| **M2** | **R$ 30.000** | **R$ 1.900** |
+| **M3** | **R$ 55.000** | **R$ 3.200** |
 
-**Adicional de volume:** acima de **3.000 conversas/mês**, **+R$ 250/mês a cada 1.000 conversas**,
-nas três opções. É a curadoria e o monitoramento, que crescem com o volume. *(Conta nossa: na
-Octadesk, cada 1.000 contatos a mais custam ~R$ 760 com plataforma e IA; cobramos um terço porque
-plataforma e tokens aqui são repasse.)*
+**Adicional de volume:** acima de **3.000 conversas/mês**, **+R$ 250/mês a cada 1.000 conversas ou
+fração**. É a curadoria e o monitoramento, que crescem com o volume. *(Conta nossa: na Octadesk, cada
+1.000 contatos a mais custam ~R$ 760 com plataforma e IA; cobramos um terço porque aqui plataforma e
+tokens são repasse.)*
+
+### Passo a passo
+
+```
+1. decisão       para cada função: sistema do cliente ou o nosso?
+2. sistemas      conte os sistemas DO CLIENTE que a Maísa lê ou escreve
+3. nível         0 sistemas e uma regra                              → M1
+                 1–2 sistemas, ou fluxo próprio, ou regras por unidade → M2
+                 3+ sistemas, ou multicanal, ou vários fluxos        → M3
+4. setup         tabela do nível + itens novos (sw × R$ 1.600), × 1,15 se pacote enterprise
+5. mensalidade   tabela do nível + R$ 250 × ⌈(conversas − 3.000) ÷ 1.000⌉, se passar de 3.000
+6. ano 1         setup + 12 × mensalidade
+7. repasse       ≈ R$ 185 + conversas × R$ 0,111 + mensagens de template × tarifa da Meta
+```
 
 **Âncora de valor:** a alternativa da Maísa é gente. Uma recepcionista ou atendente custa
 **R$ 3.500–6.000/mês** carregada. Escreva na proposta quanto a mensalidade + repasse representa disso.
@@ -185,34 +211,44 @@ enterprise com SLA ([`mercado.md`](mercado.md) §2).
 
 ### O setup, por linha
 
-| Linha | Essencial | **Recomendada** | Completa |
-| --- | --- | --- | --- |
-| **Núcleo** — mobilização, domínio (schema, prompt, planos determinísticos, vocabulário), 1 fonte própria do cliente, autorização binária, go-live | R$ 16.000 | **R$ 20.000** | R$ 25.000 |
-| **+ por sistema de terceiro** (leitura via API) | R$ 10.000 | **R$ 10.000** | R$ 10.000 |
-| **+ por fonte própria adicional** (outra base do cliente) | R$ 4.000 | **R$ 4.000** | R$ 4.000 |
-| **+ isolamento por pessoa** ("cada um só vê o próprio dado") — gate 8 | R$ 12.000 | **R$ 12.000** | R$ 12.000 |
-| **+ plataforma web** (SSO, perfis, painel), se pedida | R$ 15.000 | **R$ 15.000** | R$ 15.000 |
-
-**O que muda entre as opções é o núcleo e quantas linhas entram**, não o preço de cada linha. A
-Essencial cobre menos do domínio (as perguntas mais frequentes) e pode deixar um sistema para a fase
-2; a Completa cobre o domínio inteiro e todos os sistemas. Integração e segurança não têm versão
-"barata": ou é feita, ou fica de fora.
+| Linha | Preço |
+| --- | --- |
+| **Núcleo** — mobilização, domínio (schema, prompt, planos determinísticos, vocabulário), 1 fonte própria do cliente, autorização binária, go-live | **R$ 20.000** |
+| **+ por sistema de terceiro** (leitura via API) | **R$ 10.000** cada |
+| **+ por fonte própria adicional** (outra base do cliente) | **R$ 4.000** cada |
+| **+ isolamento por pessoa** ("cada um só vê o próprio dado") — gate 8 | **R$ 12.000** |
+| **+ plataforma web** (SSO, perfis, painel), se pedida | **R$ 15.000** |
 
 ### A mensalidade
 
-| Franquia de perguntas/mês, **usuários ilimitados** | Essencial | **Recomendada** | Completa |
-| --- | --- | --- | --- |
-| até 2.000 | R$ 1.500 | **R$ 1.800** | R$ 2.400 |
-| até 6.000 | R$ 2.500 | **R$ 3.000** | R$ 3.900 |
-| até 15.000 | R$ 4.000 | **R$ 4.800** | R$ 6.200 |
-| acima de 15.000 | sob medida — escale | | |
+| Franquia de perguntas/mês, **usuários ilimitados** | Plataforma |
+| --- | --- |
+| até 2.000 | **R$ 1.800** |
+| até 6.000 | **R$ 3.000** |
+| até 15.000 | **R$ 4.800** |
+| acima de 15.000 | sob medida — escale |
 
-**+ R$ 400/mês por conector de sistema de terceiro**, nas três opções. É quem paga o conserto quando
-a API do outro lado muda, e é o que a casa esquecia de cobrar: um Plum com três sistemas tem três
-vezes a superfície de manutenção de um Plum com um.
+**+ R$ 400/mês por conector de sistema de terceiro.** É quem paga o conserto quando a API do outro
+lado muda: um Plum com três sistemas tem três vezes a superfície de manutenção de um Plum com um.
 
 **Estourou a franquia dois meses seguidos:** sobe de faixa no mês seguinte, avisado por escrito. Não
 se cobra por pergunta avulsa: o comprador enterprise paga por previsibilidade.
+
+### Passo a passo
+
+```
+1. fontes        de onde vêm os dados? base própria do cliente, ou sistema de terceiro por API?
+2. quem vê o quê "todo mundo autenticado vê tudo" → autorização binária (já no núcleo)
+                 "cada um só vê o próprio dado"  → + isolamento por pessoa
+3. setup         R$ 20.000
+                 + R$ 10.000 × sistemas de terceiro + R$ 4.000 × fontes próprias extras
+                 + R$ 12.000 se isolamento + R$ 15.000 se plataforma web
+                 + itens novos (sw × R$ 1.600), × 1,15 se pacote enterprise
+4. perguntas     pessoas que perguntam × perguntas por semana × 4,3   (estimado COM o cliente)
+5. mensalidade   faixa da franquia + R$ 400 × sistemas de terceiro
+6. ano 1         setup + 12 × mensalidade
+7. repasse       custo por pergunta não medido → "a medir no primeiro mês"
+```
 
 ## Ludi enterprise
 
@@ -223,15 +259,15 @@ Diário Escola); IA pedagógica, R$ 103–110 por aluno/ano (Letrus) ou US$ 15 (
 
 ### A tabela
 
-| Módulo, por aluno ativo por ano | Essencial | **Recomendada** | Completa |
-| --- | --- | --- | --- |
-| **Ludi Atendimento** — coordenador virtual no WhatsApp: FAQ por setor, comunicados, notas, agendamento | R$ 15 | **R$ 24** | R$ 34 |
-| **Ludi Pedagógico** — análise de desempenho e de simulados com agentes | R$ 30 | **R$ 45** | R$ 65 |
-| **Piso mensal do contrato** | R$ 1.000 | **R$ 1.200** | R$ 1.500 |
+| Módulo, por aluno ativo por ano | Preço |
+| --- | --- |
+| **Ludi Atendimento** — coordenador virtual no WhatsApp: FAQ por setor, comunicados, notas, agendamento | **R$ 24** |
+| **Ludi Pedagógico** — análise de desempenho e de simulados com agentes | **R$ 45** |
+| **Piso mensal do contrato** | **R$ 1.200** |
 
 ⚠️ **O Pedagógico fica abaixo do topo do mercado de propósito.** A Letrus cobra R$ 103–110 com
 resultado de aprendizagem medido em rede pública; o Ludi ainda não tem esse resultado. Quando tiver
-um caso com número, a faixa sobe.
+um caso com número, o preço sobe.
 
 **Desconto por volume, por faixa** (como imposto de renda — cada faixa só vale para os alunos dentro
 dela, para não haver degrau):
@@ -250,8 +286,21 @@ mensalidades) + **R$ 10.000 por sistema acadêmico integrado** via API (mesma li
 mensal; **preço mantido se o número de alunos variar até ±15%**; recontagem na rematrícula; reajuste
 anual por índice (IPCA).
 
-**Escola pequena:** o piso mensal é o que paga a implantação e a sustentação quando o por-aluno não
-chega lá. Abaixo de ~500 alunos, o piso quase sempre manda.
+### Passo a passo
+
+```
+1. alunos        alunos ATIVOS (matrícula), confirmados com a escola e conferidos no Censo Escolar
+2. anual         Σ por módulo: alunos de cada faixa × preço do módulo × (1 − desconto da faixa)
+3. mensalidade   o maior entre anual ÷ 12 e o piso de R$ 1.200
+4. setup         o maior entre 2 × mensalidade e R$ 5.000
+                 + R$ 10.000 × sistemas acadêmicos integrados
+                 + itens novos (sw × R$ 1.600), × 1,15 se pacote enterprise
+5. ano 1         setup + 12 × mensalidade
+6. repasse       infra e tokens não medidos → "a medir no primeiro mês"
+```
+
+**Escola pequena:** abaixo de 600 alunos só no Atendimento, o piso de R$ 1.200 manda. É o que paga a
+implantação e a sustentação quando o por-aluno não chega lá.
 
 ---
 
@@ -302,7 +351,7 @@ perguntar (grupo, S.A., setor regulado). ⚠️ Os 15% são decisão, não medi�
 Com o número **do cliente**, com autor e data:
 
 ```
-captura = ano 1 da Recomendada ÷ ganho anual declarado
+captura = ano 1 ÷ ganho anual declarado
 ```
 
 | Captura | Leitura |
@@ -310,12 +359,12 @@ captura = ano 1 da Recomendada ÷ ganho anual declarado
 | **abaixo de 10%** | há espaço. Se o ganho for ≥ R$ 200 mil, abra o **modo ROI-âncora** (abaixo) |
 | **10% a 20%** | **o alvo.** No meio do que se pratica: 5–10% em value pricing de serviços, 20–30% em automação |
 | **20% a 30%** | aceitável; mostre a conta na proposta |
-| **acima de 30%** | **gate 13.** Não baixe o preço por unidade: **reduza o escopo** (a Essencial vira a recomendada, ou o resto vai para a fase 2) |
+| **acima de 30%** | **gate 13.** Não baixe o preço por unidade: **reduza o escopo**: o que não couber vai para a fase 2, com preço escrito |
 
 **Modo ROI-âncora.** Ganho anual **quantificado e verificável ≥ R$ 200 mil** e captura abaixo de 10%:
 
 ```
-ano 1 da Recomendada = 15% do ganho anual     (Essencial 10%, Completa 20%)
+ano 1 = 15% do ganho anual                  (faixa de 10% a 20%)
   a mensalidade fica na tabela; o setup absorve a diferença
   nunca abaixo da tabela do produto — o modo existe para subir, não para descer
 ```
@@ -341,7 +390,7 @@ O cliente compra se ganhar mais com o NI do que com a alternativa dele. Então *
 registra a alternativa real e o custo dela**: contratar uma pessoa, um SaaS de nicho, o relatório do
 próprio ERP, uma planilha, a função nativa da plataforma que ele já usa.
 
-- **Se a alternativa entrega o núcleo do pedido por menos da metade do ano 1 da Essencial,** a
+- **Se a alternativa entrega o núcleo do pedido por menos da metade do nosso ano 1,** a
   proposta tem de dizer **em reais** o que o NI entrega a mais: integração, regras próprias,
   unidades, segurança. Se não conseguir dizer, é caso de plug-and-play, ou de não vender.
 - **Se a plataforma que ele já usa entrega o núcleo de fábrica,** nenhum preço ganha o deal (gate 12).
@@ -354,7 +403,7 @@ próprio ERP, uma planilha, a função nativa da plataforma que ele já usa.
 O esforço deixou de formar o preço, mas **o preço não pode ficar abaixo do que custa entregar**.
 
 ```
-piso = semanas-analista × R$ 925      ← comparado com o ano 1 da ESSENCIAL
+piso = semanas-analista × R$ 925      ← comparado com o ano 1
 ```
 
 - **Só calcule se houver dimensionamento** do validador técnico no card ou equipe declarada pelo PM.
@@ -365,7 +414,7 @@ piso = semanas-analista × R$ 925      ← comparado com o ano 1 da ESSENCIAL
   prova da Poli. PM, Tech Lead e validador não contam.
 - **R$ 925** é a taxa média que a casa praticou nos projetos que vendeu, já com a coordenação. A casa
   concluiu que ela é **baixa**: por isso é piso, e só piso.
-- **A Essencial abaixo do piso** (gate 11): o escopo é maior do que o nível da tabela sugere.
+- **O ano 1 abaixo do piso** (gate 11): o escopo é maior do que o nível da tabela sugere.
   Reclassifique o nível (M1 → M2), ou tire item, ou o que falta é item novo pela taxa de construção.
 
 **Sanidade de calendário.** A casa entrega em **6 a 12 semanas**. Fora disso, confira: abaixo de 6
@@ -381,7 +430,7 @@ entrega, e é caso de **vender por fase**.
 | Parte | O que é | Na proposta |
 | --- | --- | --- |
 | **sustentação corretiva** | bug, API de terceiro que mudou, modelo de IA aposentado ou que piorou | incluída, sem limite para corretiva |
-| **evolução** | melhorias e funcionalidade nova | **2 / 6 / 12 h por mês** conforme a opção. O que passar é termo aditivo, a R$ 1.600 por semana-analista |
+| **evolução** | melhorias e funcionalidade nova | **6 h por mês**, escritas na proposta. O que passar é termo aditivo, a R$ 1.600 por semana-analista |
 | **migração forçada** | troca de modelo de IA ou de versão de API por decisão do fornecedor | incluída **até 1 semana-analista por ano**; acima disso, orçada à parte |
 | ~~operação~~ | tokens, infra, conversas da Meta, APIs pagas | **fora: repasse ao cliente** |
 
@@ -449,7 +498,7 @@ recomenda para fornecedor jovem, que é quem mais absorve estouro em preço fech
 **Item condicionado entra na proposta com a condição escrita ao lado, ou não entra.**
 
 **Vender fase, não projeto.** Três meses é a janela de uma entrega, não da relação. Desenhe a fase 2
-(com escopo e preço) **antes** de fechar a fase 1: é ela que a Essencial empurra para frente.
+(com escopo e preço) **antes** de fechar a fase 1: é para ela que vai o que o cliente não pode pagar agora.
 
 **Lista do que está fora do escopo**, sempre, na proposta.
 
@@ -460,8 +509,8 @@ recomenda para fornecedor jovem, que é quem mais absorve estouro em preço fech
 As propostas que a casa já fez — vendidas e perdidas — são **evidência de como clientes reagiram a
 preços**, não régua. Duas regras:
 
-1. **Use a reação, não o preço.** "Um cliente de Maísa M1 recusou por caro um setup acima da
-   Completa" é informação útil. "Cobramos X de um cliente parecido, então cobre X" não é: os preços
+1. **Use a reação, não o preço.** "Um cliente de Maísa M1 recusou por caro um setup 60% acima
+   da tabela" é informação útil. "Cobramos X de um cliente parecido, então cobre X" não é: os preços
    da base saíram, na avaliação da própria casa, abaixo do que deviam.
 2. **Ausência de objeção não é aprovação.** Muitos deals morreram antes do preço (decisor, timing,
    substituto). Só conta como teto o "caro demais" dito pelo cliente.
@@ -477,7 +526,7 @@ Qualquer um que dispare, **escale antes de apresentar**.
 
 | # | Gate | Por quê |
 | --- | --- | --- |
-| 1 | **ano 1 da Recomendada > R$ 120.000**, ou prazo > 12 semanas | maior que qualquer projeto que a casa já entregou |
+| 1 | **ano 1 > R$ 120.000**, ou prazo > 12 semanas | maior que qualquer projeto que a casa já entregou |
 | 2 | **aderência duvidosa** — o balde "novo" é maior que "pronto" + "perto" juntos | é produto novo disfarçado de enterprise |
 | 3 | integração com credencial **`parceria`**, **`bloqueado`** ou **não documentada** | a data não está nas mãos do NI |
 | 4 | **provedor-gestor** (Booksy, Trinks, Fresha) | não cabe nas portas atuais |
@@ -487,7 +536,7 @@ Qualquer um que dispare, **escale antes de apresentar**.
 | 8 | **isolamento por pessoa** exigido | desenvolvimento novo e requisito de segurança |
 | 9 | **modo ROI-âncora ativo** | o preço descolou da tabela |
 | 10 | **mensalidade zero, ou MRR abaixo de 25% do ano 1** | meta de recorrência do núcleo. Diga o motivo: caixa do cliente é informação; desconto ou esquecimento é decisão de quem responde pela receita |
-| 11 | **preço fora da tabela** — desconto acima de 15%, Essencial abaixo do piso de esforço, ou preço acima da Completa sem ROI-âncora | a tabela é a âncora; sair dela é decisão, não improviso |
+| 11 | **preço fora da tabela** — desconto acima de 15%, ano 1 abaixo do piso de esforço, ou preço acima da tabela sem ROI-âncora | a tabela é a âncora; sair dela é decisão, não improviso |
 | 12 | **alerta crítico da pesquisa** — recuperação judicial, política corporativa que exclui o NI, plataforma atual que entrega o núcleo de fábrica | preço nenhum resolve; às vezes nem vale apresentar |
 | 13 | **captura acima de 30%** do ganho declarado | o preço passou do que o valor sustenta: corte escopo |
 
@@ -506,14 +555,14 @@ referência ativa, pagamento antecipado, prazo de decisão curto, escopo reduzid
 | acima de 15% | escala — gate 11 |
 
 **Negocie termo, não preço:** parcelas, entrada, prazo de pagamento e escopo são negociáveis; o preço
-por unidade da tabela não. Cliente que acha caro tem a Essencial; baixar a Recomendada ensina o
-cliente a pedir desconto.
+por unidade da tabela não. Cliente que acha caro tira escopo (vira fase 2); baixar o preço da
+tabela ensina o cliente a pedir desconto.
 
 ## Na proposta: o que a pesquisa de comportamento manda
 
 1. **Faça a primeira oferta**, com o número preciso que sai do modelo — R$ 30.000 de tabela, não
    "uns 30 mil". Número preciso com memória de cálculo é menos negociado.
-2. **Três opções, lado a lado**, com a Recomendada marcada.
+2. **Uma proposta, com a fase 2 já desenhada**: o cliente vê o próximo passo e o preço dele.
 3. **Compare a mensalidade com o custo da alternativa** (uma atendente, um analista), não com preço
    de software.
 4. **Nunca diga faixa de preço antes de dimensionar.** Faixa dita na primeira reunião vira teto na
@@ -525,12 +574,12 @@ cliente a pedir desconto.
 
 - **As tabelas são decisão ancorada em mercado, não medição.** Os níveis saíram das faixas públicas
   de [`mercado.md`](mercado.md), posicionados no meio delas. Nenhuma proposta foi feita com a v6 ainda:
-  a primeira safra é o teste, e **a opção escolhida em cada proposta é o que vai calibrar**.
+  a primeira safra é o teste, e **preço, desfecho e motivo de cada proposta** é o que vai calibrar.
 - **Faixas de mercado brasileiras de agente de IA vêm de poucos fornecedores** que publicam preço, e
   várias de blog. Enterprise quase nunca é público.
 - **O Ludi Pedagógico não tem resultado medido**, e por isso fica abaixo do topo do mercado.
 - **O adicional de volume da Maísa, os R$ 400 por conector do Plum, o pacote enterprise de 15% e
-  as horas de evolução por opção são decisões**, derivadas por conta nossa, não medidas.
+  as 6 h de evolução por mês são decisões**, derivadas por conta nossa, não medidas.
 - **Custo por consulta do Plum e infra do Ludi não foram medidos**: sem eles não há opção de consumo
   incluso nesses dois.
 - **O piso de R$ 925 é da safra que a casa julga barata.** Ele protege contra regressão, não diz

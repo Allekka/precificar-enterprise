@@ -6,7 +6,8 @@ description: Chegar a um preço defensável para a versão enterprise da Maísa 
 # Precificar uma venda enterprise — Maísa, Plum e Ludi
 
 O comercial joga o que tem — card do ValidaNI, anotação de reunião, transcrição, print de conversa — e
-sai daqui com **três opções de preço**, premissas, gates e o que a pesquisa achou da empresa. **Não é
+sai daqui com **um preço — setup e mensalidade — e a conta que o gerou**, premissas, gates e o que
+a pesquisa achou da empresa. **Não é
 uma calculadora:** metade do valor está nas perguntas que ela faz antes de calcular.
 
 Os números moram em [`modelo.md`](modelo.md). As faixas de mercado de onde eles saíram, com os links,
@@ -130,9 +131,15 @@ Com o produto e o pedido na mão, ache a linha da tabela em [`modelo.md`](modelo
 
 | Produto | O que decide a linha | A unidade da mensalidade |
 | --- | --- | --- |
-| **Maísa** | **complexidade M1 / M2 / M3** — quantos sistemas do cliente, fluxos próprios, unidades com regra diferente | nível + adicional acima de 3.000 conversas/mês |
+| **Maísa** | **nível M1 / M2 / M3** — quantos sistemas **do cliente** entram (depois da decisão abaixo), fluxos próprios, unidades com regra diferente | nível + adicional acima de 3.000 conversas/mês |
 | **Plum** | **linhas**: núcleo + cada sistema de terceiro + fontes próprias + isolamento por pessoa + plataforma web | franquia de perguntas/mês, **usuários ilimitados** + R$ 400 por conector |
 | **Ludi** | **módulos** (Atendimento, Pedagógico) + implantação + sistemas acadêmicos integrados | **alunos ativos × preço por aluno/ano**, desconto por faixa, piso mensal |
+
+🎯 **Na Maísa, antes do nível: sistema do cliente ou o nosso?** Para cada função — agenda, cadastro,
+CRM, cobrança, nota fiscal —, o mapeamento costuma já ter decidido se a Maísa usa o sistema que o
+cliente tem ou o dela. **É isso que define o nível**: função no nosso sistema (ou no Google Calendar
+do cliente) não conta; cada sistema do cliente conta um. Se a decisão não veio no card, pergunte. Se
+depender do cliente, precifique pelo "nosso" e ponha a integração como item condicionado, com preço.
 
 **Na dúvida entre dois níveis, fique no de baixo** e escreva o porquê. Volume e alunos que vieram da
 pesquisa entram **"a confirmar"**.
@@ -142,22 +149,23 @@ só pode ver o próprio dado, é a linha de isolamento por pessoa e o gate 8.
 
 **Cobrança por assento nunca.** Nos três produtos o valor não escala com logins.
 
-## Passo 5 — Montar as três opções
+## Passo 5 — Montar o preço
 
-**Toda proposta sai com três opções: Essencial, Recomendada e Completa.** O que muda entre elas é
-escopo e garantia — horas de evolução, suporte, acompanhamento, cobertura — e não o nome. A
-Recomendada é o pedido do cliente. Definição exata em § As três opções de [`modelo.md`](modelo.md).
-
-Para cada opção:
+**Uma proposta, um preço: um setup e uma mensalidade.** O escopo chega decidido do mapeamento, e três
+versões do mesmo escopo só mudariam o nome. Siga o **passo a passo do produto** em
+[`modelo.md`](modelo.md) — Maísa, Plum ou Ludi — e mostre cada linha da conta na saída.
 
 ```
 setup        = tabela do produto
              + itens novos: semanas-analista × R$ 1.600 (equipe do validador ou do PM)
-             + 15% de pacote enterprise, só se houver 2+ requisitos formais
+             × 1,15 de pacote enterprise, só se houver 2+ requisitos formais
 mensalidade  = tabela do produto + adicionais
 ano 1        = setup + mensalidade × 12
 repasse      = estimativa mensal, FORA do ano 1
 ```
+
+🎯 **O que não couber no bolso do cliente vira fase 2**, com escopo e preço escritos — nunca desconto
+na tabela. Desenhe a fase 2 antes de fechar a fase 1.
 
 🎯 **Itens novos: a equipe é pergunta, não estimativa.** Se o card tem dimensionamento do validador
 técnico, use o dele; se não, pergunte ao comercial quantas pessoas o PM vai alocar e por quantas
@@ -175,8 +183,8 @@ repasse — execução **e** pós-projeto — e a estimativa mensal. Maísa tem 
 **opção de consumo incluso** (§ O repasse em [`modelo.md`](modelo.md)).
 
 🎯 **A mensalidade declara o que cobre:** sustentação corretiva, migração forçada até o limite anual,
-e **as horas de evolução da opção, por escrito**. "Features sob demanda" sem teto de horas é passivo
-ilimitado.
+**6 h de evolução por mês**, suporte em 1 dia útil e relatório mensal de resultado, por escrito.
+"Features sob demanda" sem teto de horas é passivo ilimitado.
 
 ## Passo 6 — As conferências
 
@@ -184,9 +192,9 @@ Nesta ordem, e todas aparecem na saída, com a conta:
 
 | Conferência | Regra | Se falhar |
 | --- | --- | --- |
-| **valor** | captura = ano 1 da Recomendada ÷ ganho declarado. **Alvo 10%–20%**, máximo 30% | abaixo de 10% com ganho ≥ R$ 200 mil → **modo ROI-âncora** (gate 9). Acima de 30% → **corte escopo**, não preço (gate 13) |
-| **alternativa** | a proposta diz, em reais, o que o NI entrega além da alternativa | alternativa faz o núcleo por menos da metade da Essencial e você não consegue dizer o diferencial → plug-and-play, ou não vender |
-| **piso** | ano 1 da Essencial ≥ semanas-analista × R$ 925 — **só com dimensionamento** | gate 11: o nível está errado, ou falta item novo |
+| **valor** | captura = ano 1 ÷ ganho declarado. **Alvo 10%–20%**, máximo 30% | abaixo de 10% com ganho ≥ R$ 200 mil → **modo ROI-âncora** (gate 9). Acima de 30% → **corte escopo**, não preço (gate 13) |
+| **alternativa** | a proposta diz, em reais, o que o NI entrega além da alternativa | alternativa faz o núcleo por menos da metade do nosso ano 1 e você não consegue dizer o diferencial → plug-and-play, ou não vender |
+| **piso** | ano 1 ≥ semanas-analista × R$ 925 — **só com dimensionamento** | gate 11: o nível está errado, ou falta item novo |
 | **recorrência** | mensalidade × 12 ≥ 25% do ano 1, nunca zero | gate 10 |
 | **calendário** | 6 a 12 semanas, contando as semanas de prova da Poli | fora disso, confira etapas ou venda por fase |
 
@@ -219,26 +227,27 @@ EMPRESA       Clínicas Exemplo Ltda · CNPJ 00.000.000/0001-00 · aberta em 201
               ALERTAS: nenhum · NÃO ACHEI: faturamento
 ADERÊNCIA     Maísa · pronto: atendimento, FAQ, agenda · perto: handoff (feito no Ludi)
               novo: nenhum · integração com o sistema de gestão da clínica (credencial: cadastro)
-NÍVEL         M2 — 1 sistema do cliente · 2.400 conversas/mês (cliente, reunião de 18/09)
-OPÇÕES                        Essencial      Recomendada ⭐   Completa
-  setup                       R$ 22.000      R$ 30.000       R$ 38.000
-  mensalidade                 R$ 1.400       R$ 1.900        R$ 2.500
-  evolução / suporte          2 h · 2 d.u.   6 h · 1 d.u.    12 h · 4 h úteis
-  ANO 1                       R$ 38.800      R$ 52.800       R$ 68.000
+NÍVEL         M2 — agenda e cadastro no sistema DA CLÍNICA (decidido no mapeamento): 1 sistema
+              2.400 conversas/mês (cliente, reunião de 18/09)
+PREÇO         setup        R$ 30.000   tabela M2
+              mensalidade  R$  1.900   tabela M2 · abaixo de 3.000 conversas, sem adicional
+                                       inclui 6 h/mês de evolução, suporte em 1 dia útil, relatório
+              ANO 1        R$ 30.000 + 12 × R$ 1.900 = R$ 52.800
+FASE 2        nenhuma pedida
 REPASSE       R$ 185 + 2.400 × R$ 0,111 + templates da Meta ≈ R$ 500/mês (estimativa, prior medido)
               ou consumo incluso: R$ 1.900 + 500 × 1,15 = R$ 2.475/mês, franquia 2.880 conversas
 VALOR         ganho declarado R$ 300 mil/ano (sócia-diretora, 18/09) → captura 17,6% ✓ alvo
 ALTERNATIVA   1 recepcionista a mais: R$ 2.500 × 1,8 × 12 = R$ 54 mil/ano, sem cobrir a noite nem
               integrar o sistema · mensalidade + repasse = 53% do custo mensal dela
-PISO          validador: 2 analistas × 8 semanas = 16 sw × R$ 925 = R$ 14.800 ≤ Essencial ✓
-RECORRÊNCIA   Recomendada: 22.800 ÷ 52.800 = 43% ✓
+PISO          validador: 2 analistas × 8 semanas = 16 sw × R$ 925 = R$ 14.800 ≤ ano 1 ✓
+RECORRÊNCIA   22.800 ÷ 52.800 = 43% ✓
 HISTÓRICO     nada que contradiga este nível
 GATES         nenhum
 O QUE ASSUMI  ganho declarado na reunião, não verificado
               2.400 conversas/mês estimadas com a cliente, não medidas
               API do sistema de gestão em "cadastro", ninguém da casa testou — confirmar na fase 1
               nenhum número foi dito à cliente antes desta proposta
-LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"Recomendada apresentada; repasse estimado R$ 500/mês",,,,,,v6,M2,38800/52800/68000,,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v7,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
 ```
 
 **"O que assumi" é obrigatório e não pode ser cosmético.** Vai para a proposta como premissa.
@@ -248,8 +257,8 @@ LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,1
 ## Passo 9 — Registrar a linha
 
 Devolva **a linha do `registro.csv` pronta para colar**, no formato exato do cabeçalho, campo vazio
-onde não se sabe, **mesmo que o deal não feche**. Depois volte para preencher o desfecho **e a opção
-que o cliente escolheu** — com poucos deals, é a única medida honesta de disposição a pagar.
+onde não se sabe, **mesmo que o deal não feche**. Depois volte para preencher o desfecho **e o
+motivo** — com poucos deals, é a única medida honesta de onde o preço passa e onde não passa.
 
 O campo `status` aceita: `proposta_enviada` · `em_negociacao` · `esfriou` · `ganho` · `perdido` ·
 `em_andamento` · `CONGELADO`. **`esfriou` não é `perdido`.** Em `perdido`, **o motivo não é
@@ -267,9 +276,9 @@ cola no arquivo compartilhado do núcleo. Se ninguém souber onde ele está, dig
 - ❌ Cobrar por assento.
 - ❌ Descontar por reuso entre produtos de linguagens diferentes. Atravessa conhecimento, não código.
 - ❌ Ancorar a proposta no orçamento que o cliente deixou escapar, ou no preço de uma proposta antiga.
-- ❌ Apresentar uma opção só. São três, e a Recomendada é o pedido.
-- ❌ Baixar o preço da Recomendada porque o cliente reclamou. Ele tem a Essencial; negocie termo
-  (entrada, parcelas, escopo), não preço.
+- ❌ Montar três versões do mesmo escopo. A proposta é uma; o que não cabe vira fase 2.
+- ❌ Baixar o preço da tabela porque o cliente reclamou. Tire escopo (vira fase 2) ou negocie termo
+  (entrada, parcelas), não preço.
 - ❌ Transformar risco em margem. Risco vira **cláusula**: item condicionado, fase 0, data
   condicionada à credencial.
 - ❌ Estimar o ganho por conta própria, ou tirar da pesquisa, e usar esse número para subir o preço.
