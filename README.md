@@ -82,6 +82,11 @@ perda ou dado interno entra aqui** — este repositório é público.
 
 ---
 
+**Versão 8 · 25/09/2026.** Três correções: **sem limite de prazo** de implementação (o gate 1 fica só
+no valor); **qualificação de lead com passagem ao vendedor é Maísa M1**, e fluxo próprio (M2) é pedido,
+cobrança ou pós-venda; a **sustentação do âncora passa a um terço do setup por ano**, que fecha a meta
+de 25% de recorrência.
+
 **Versão 7 · 25/09/2026.** A proposta é **uma só** — um setup e uma mensalidade —, porque o escopo
 chega decidido do mapeamento; o que não couber vira fase 2 com preço escrito. Na Maísa, a decisão
 **sistema do cliente × o nosso**, função por função, define o nível. Cada produto tem um **passo a

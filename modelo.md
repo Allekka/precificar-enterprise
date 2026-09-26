@@ -1,4 +1,4 @@
-# Modelo de precificação enterprise do NI — v7
+# Modelo de precificação enterprise do NI — v8
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
 dois divergirem, **este arquivo está certo**.
@@ -30,7 +30,7 @@ Esforço, valor e histórico continuam no modelo, cada um no seu papel:
 | **Mercado** | **âncora**: define a tabela e o formato de cobrança de cada produto | [`mercado.md`](mercado.md), tabelas abaixo |
 | **Valor para o cliente** | **teto e alavanca**: captura de 10%–20% do ganho declarado, nunca acima de 30% | § A camada de valor |
 | **A empresa** (pesquisa na internet) | **contexto**: porte real, momento, quem decide, alternativa | [`pesquisa-empresa.md`](pesquisa-empresa.md) |
-| **Esforço** | **piso** e viabilidade: o preço não pode ficar abaixo do que custa entregar, e o projeto tem de caber na janela | § O piso de esforço |
+| **Esforço** | **piso**: o preço não pode ficar abaixo do que custa entregar | § O piso de esforço |
 | **Histórico da casa** | **evidência de reação**: onde um cliente já disse "caro", "gostei" ou "aprovado". Informa, não calibra | § O histórico |
 
 **O que saiu:** o ITIP por rota e por modo de risco, o multiplicador `f_retorno × f_área ×
@@ -46,6 +46,12 @@ Recomendada, Completa). Mas o escopo chega decidido do mapeamento — na Maísa,
 função usa o sistema do cliente ou o nosso —, e três versões do mesmo escopo só mudariam o nome.
 Agora é **um setup e uma mensalidade**, com a fase 2 desenhada para o que não couber, e cada produto
 tem um **passo a passo** da conta.
+
+**Na v8 (mesmo dia), três correções**, achadas ao refazer as seis propostas ganhas pela v7:
+- **sem limite de prazo** — o gate 1 fica só no valor, e o calendário só avisa quando falta etapa;
+- **qualificação de lead com passagem ao vendedor é M1** — a tabela dizia M2 e a base histórica dizia
+  M1; a diferença era o dobro do ano 1;
+- **a sustentação do âncora é um terço do setup por ano** — com 22% ela sempre disparava o gate 10.
 
 ---
 
@@ -159,9 +165,15 @@ ao lado.
 
 | Nível | O que cabe |
 | --- | --- |
-| **M1 · padrão** | atendimento, FAQ, agendamento, lembretes, handoff para humano — tudo no sistema da Maísa ou em agenda de armazenamento. Uma regra de negócio para todas as unidades |
-| **M2 · integrada** | M1 + **1 ou 2 sistemas do cliente**, **ou** um fluxo próprio (qualificação de lead com passagem ao comercial, cobrança, pós-venda), **ou** várias unidades com regras diferentes |
+| **M1 · padrão** | atendimento, FAQ, agendamento, lembretes, **qualificação de lead** e passagem para um humano (atendente, vendedor, corretor) com o resumo da conversa — tudo no sistema da Maísa ou em agenda de armazenamento. Uma regra de negócio para todas as unidades |
+| **M2 · integrada** | M1 + **1 ou 2 sistemas do cliente**, **ou** um fluxo próprio (pedido que vira ordem de serviço, cobrança, régua de pós-venda), **ou** várias unidades com regras diferentes |
 | **M3 · complexa** | **3 ou mais sistemas do cliente**, ou mais de um canal, ou vários fluxos próprios ao mesmo tempo |
+
+**Qualificar e passar adiante é atendimento, não fluxo próprio.** Triagem de SDR com critérios,
+briefing do lead e encaminhamento ao vendedor ou corretor certo é M1. **Fluxo próprio** é quando a
+Maísa **executa um processo** do cliente além da conversa: monta um pedido ou ordem de serviço, cobra,
+conduz uma régua de pós-venda. Se o encaminhamento cair num CRM do cliente, o que sobe o nível é o
+CRM (1 sistema), não a qualificação.
 
 Na dúvida entre dois níveis, **fique no de baixo** e escreva o porquê. Item "novo" (ninguém da casa
 fez) **não sobe o nível**: entra à parte, pela taxa de construção.
@@ -184,7 +196,7 @@ tokens são repasse.)*
 ```
 1. decisão       para cada função: sistema do cliente ou o nosso?
 2. sistemas      conte os sistemas DO CLIENTE que a Maísa lê ou escreve
-3. nível         0 sistemas e uma regra                              → M1
+3. nível         0 sistemas e uma regra (qualificação e handoff inclusos) → M1
                  1–2 sistemas, ou fluxo próprio, ou regras por unidade → M2
                  3+ sistemas, ou multicanal, ou vários fluxos        → M3
 4. setup         tabela do nível + itens novos (sw × R$ 1.600), × 1,15 se pacote enterprise
@@ -326,8 +338,21 @@ ressalva de que a nossa semana é de dedicação parcial.
   como âncora (gate 5).
 
 ⚠️ **Quando o produto inteiro é novo para aquele cliente** (ex.: uma plataforma web de análise que o
-Ludi ainda não tem), a estrutura é de âncora: **construção + sustentação** (≈22% da construção por
-ano, na mensalidade), sem o por-aluno. Os clientes seguintes pagam a tabela.
+Ludi ainda não tem), a estrutura é de âncora: **construção + sustentação**, sem a tabela por unidade.
+Os clientes seguintes pagam a tabela.
+
+```
+setup         construção = semanas-analista × R$ 1.600   (× 1,15 se pacote enterprise)
+sustentação   setup ÷ 36 por mês, arredondada para cima a R$ 100   ← um terço do setup por ano
+              no Ludi, nunca abaixo do piso mensal de R$ 1.200
+ano 1         setup + 12 × sustentação
+```
+
+**Por que um terço, e não os 22% do software comum.** A meta de recorrência vale para toda proposta,
+âncora inclusive (gate 10), e setup ÷ 36 é o valor que faz a mensalidade × 12 dar **exatamente 25% do
+ano 1**. E manter IA custa mais que manter software (§ A mensalidade): modelo aposentado, drift, API
+de terceiro que muda. O âncora continua sem licença e sem as 6 h de evolução — é isso que o separa do
+seguidor, não um desconto na sustentação.
 
 ## O pacote enterprise
 
@@ -417,9 +442,9 @@ piso = semanas-analista × R$ 925      ← comparado com o ano 1
 - **O ano 1 abaixo do piso** (gate 11): o escopo é maior do que o nível da tabela sugere.
   Reclassifique o nível (M1 → M2), ou tire item, ou o que falta é item novo pela taxa de construção.
 
-**Sanidade de calendário.** A casa entrega em **6 a 12 semanas**. Fora disso, confira: abaixo de 6
-costuma faltar etapa (mobilização, acessos, go-live, treinamento); acima de 12 sobra escopo para uma
-entrega, e é caso de **vender por fase**.
+**Sem limite de prazo.** A implementação dura o que o escopo pedir; prazo longo não é gate nem motivo
+para cortar escopo. A única conferência de calendário é por baixo: **abaixo de 6 semanas**, contando as
+de prova da Poli, costuma faltar etapa (mobilização, acessos, go-live, treinamento).
 
 ---
 
@@ -497,8 +522,8 @@ recomenda para fornecedor jovem, que é quem mais absorve estouro em preço fech
 
 **Item condicionado entra na proposta com a condição escrita ao lado, ou não entra.**
 
-**Vender fase, não projeto.** Três meses é a janela de uma entrega, não da relação. Desenhe a fase 2
-(com escopo e preço) **antes** de fechar a fase 1: é para ela que vai o que o cliente não pode pagar agora.
+**Vender fase, não projeto.** Desenhe a fase 2 (com escopo e preço) **antes** de fechar a fase 1: é
+para ela que vai o que o cliente não pode pagar agora.
 
 **Lista do que está fora do escopo**, sempre, na proposta.
 
@@ -526,7 +551,7 @@ Qualquer um que dispare, **escale antes de apresentar**.
 
 | # | Gate | Por quê |
 | --- | --- | --- |
-| 1 | **ano 1 > R$ 120.000**, ou prazo > 12 semanas | maior que qualquer projeto que a casa já entregou |
+| 1 | **ano 1 > R$ 120.000** | maior que qualquer projeto que a casa já entregou |
 | 2 | **aderência duvidosa** — o balde "novo" é maior que "pronto" + "perto" juntos | é produto novo disfarçado de enterprise |
 | 3 | integração com credencial **`parceria`**, **`bloqueado`** ou **não documentada** | a data não está nas mãos do NI |
 | 4 | **provedor-gestor** (Booksy, Trinks, Fresha) | não cabe nas portas atuais |

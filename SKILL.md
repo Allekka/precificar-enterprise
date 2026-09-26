@@ -141,6 +141,10 @@ cliente tem ou o dela. **É isso que define o nível**: função no nosso sistem
 do cliente) não conta; cada sistema do cliente conta um. Se a decisão não veio no card, pergunte. Se
 depender do cliente, precifique pelo "nosso" e ponha a integração como item condicionado, com preço.
 
+**Qualificar lead e passar ao vendedor é M1**, com briefing e roteamento inclusos. Fluxo próprio (M2)
+é quando a Maísa executa um processo além da conversa: pedido ou ordem de serviço, cobrança, régua de
+pós-venda.
+
 **Na dúvida entre dois níveis, fique no de baixo** e escreva o porquê. Volume e alunos que vieram da
 pesquisa entram **"a confirmar"**.
 
@@ -174,7 +178,8 @@ projeto para o mesmo tamanho e erra o preço em 50%.
 
 🎯 **Cliente-âncora.** Quem financia um item novo paga a construção dele e depois fica, **daquela
 capacidade**, em preço de custo: sustentação sem evolução. Se o produto inteiro é novo para ele, a
-estrutura é construção + sustentação, sem a tabela por unidade. ⚠️ Sem mantenedor declarado para
+estrutura é construção + sustentação (**setup ÷ 36 por mês**, um terço do setup por ano — é o que
+fecha os 25% de recorrência), sem a tabela por unidade. ⚠️ Sem mantenedor declarado para
 depois que o autor se formar, não venda como âncora (gate 5).
 
 🎯 **Tokens, infra e APIs pagas são do cliente.** Ficam fora do ano 1. A proposta traz a cláusula de
@@ -196,7 +201,7 @@ Nesta ordem, e todas aparecem na saída, com a conta:
 | **alternativa** | a proposta diz, em reais, o que o NI entrega além da alternativa | alternativa faz o núcleo por menos da metade do nosso ano 1 e você não consegue dizer o diferencial → plug-and-play, ou não vender |
 | **piso** | ano 1 ≥ semanas-analista × R$ 925 — **só com dimensionamento** | gate 11: o nível está errado, ou falta item novo |
 | **recorrência** | mensalidade × 12 ≥ 25% do ano 1, nunca zero | gate 10 |
-| **calendário** | 6 a 12 semanas, contando as semanas de prova da Poli | fora disso, confira etapas ou venda por fase |
+| **calendário** | sem prazo máximo · abaixo de 6 semanas, contando as de prova da Poli, costuma faltar etapa | confira mobilização, acessos, go-live e treinamento |
 
 ⚠️ **O histórico da casa entra aqui, como evidência de reação, nunca como régua.** Se a base tiver um
 "caro demais" no mesmo produto e nível, diga na saída. ❌ Não use o preço de uma proposta antiga como
@@ -247,7 +252,7 @@ O QUE ASSUMI  ganho declarado na reunião, não verificado
               2.400 conversas/mês estimadas com a cliente, não medidas
               API do sistema de gestão em "cadastro", ninguém da casa testou — confirmar na fase 1
               nenhum número foi dito à cliente antes desta proposta
-LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v7,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v8,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
 ```
 
 **"O que assumi" é obrigatório e não pode ser cosmético.** Vai para a proposta como premissa.
