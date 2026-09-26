@@ -16,6 +16,12 @@ Sem eles não sai preço, e a skill não deve inventá-los.
 | **Plum** | **Perguntas por mês** (estime com ele: quantas pessoas × quantas vezes por semana) e **quem pode ver o quê** | a franquia define a mensalidade; isolamento por pessoa é uma linha inteira e um gate |
 | **Ludi** | **Alunos ativos** e **quais módulos** (Atendimento, Pedagógico) | a unidade de preço do Ludi é o aluno |
 
+**Para o nível da Maísa, as quatro perguntas** ([`modelo.md`](modelo.md) § O nível): quantos sistemas
+do cliente ela lê ou escreve · as unidades têm regras diferentes · há outro canal além do WhatsApp · ela
+faz algo sozinha, com efeito fora da conversa, **sem uma pessoa da empresa aprovar antes** (cobrar,
+campanha ativa, orçamento fechado)? Se a última resposta for "não, alguém da empresa recebe e decide",
+é M1. A skill mostra o nível e o que o mudaria, e **o comercial confirma**.
+
 Sobre o primeiro campo: **concreto, não adjetivo.** "Quer algo mais personalizado" não é resposta.
 "Quer que o lembrete saia 48 h antes em vez de 24 h" é. "Quer consultar quanto sobrou do orçamento
 de viagem dele" é.

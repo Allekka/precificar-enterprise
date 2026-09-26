@@ -1,4 +1,4 @@
-# Modelo de precificação enterprise do NI — v8
+# Modelo de precificação enterprise do NI — v9
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
 dois divergirem, **este arquivo está certo**.
@@ -52,6 +52,11 @@ tem um **passo a passo** da conta.
 - **qualificação de lead com passagem ao vendedor é M1** — a tabela dizia M2 e a base histórica dizia
   M1; a diferença era o dobro do ano 1;
 - **a sustentação do âncora é um terço do setup por ano** — com 22% ela sempre disparava o gate 10.
+
+**Na v9, o nível da Maísa virou quatro perguntas.** O "fluxo próprio" era vago e puxava empresa pequena
+para M2 por palavras do deck ("painel", "ordem de serviço", "briefing"). Agora há o **teste do
+humano** — se uma pessoa da empresa recebe e decide, é M1 — e a skill mostra ao comercial como chegou
+ao nível e o que o mudaria.
 
 ---
 
@@ -163,17 +168,49 @@ ao lado.
 
 ### O nível
 
-| Nível | O que cabe |
-| --- | --- |
-| **M1 · padrão** | atendimento, FAQ, agendamento, lembretes, **qualificação de lead** e passagem para um humano (atendente, vendedor, corretor) com o resumo da conversa — tudo no sistema da Maísa ou em agenda de armazenamento. Uma regra de negócio para todas as unidades |
-| **M2 · integrada** | M1 + **1 ou 2 sistemas do cliente**, **ou** um fluxo próprio (pedido que vira ordem de serviço, cobrança, régua de pós-venda), **ou** várias unidades com regras diferentes |
-| **M3 · complexa** | **3 ou mais sistemas do cliente**, ou mais de um canal, ou vários fluxos próprios ao mesmo tempo |
+| Nível | Em uma frase | O que cabe |
+| --- | --- | --- |
+| **M1 · padrão** | a Maísa conversa e entrega para uma pessoa da empresa | atendimento, FAQ, agendamento, lembretes, qualificação de lead, pedido ou solicitação estruturada, handoff com resumo — tudo no sistema da Maísa, em planilha ou em agenda de armazenamento. Uma regra de negócio para todas as unidades |
+| **M2 · integrada** | a Maísa lê ou escreve no sistema do cliente, **ou** age sozinha num processo | M1 + **1 ou 2 sistemas do cliente**, **ou** um fluxo próprio, **ou** várias unidades com regras diferentes |
+| **M3 · complexa** | várias integrações ou vários processos ao mesmo tempo | **3 ou mais sistemas do cliente**, **ou** mais de um canal além do WhatsApp, **ou** 2+ fluxos próprios |
 
-**Qualificar e passar adiante é atendimento, não fluxo próprio.** Triagem de SDR com critérios,
-briefing do lead e encaminhamento ao vendedor ou corretor certo é M1. **Fluxo próprio** é quando a
-Maísa **executa um processo** do cliente além da conversa: monta um pedido ou ordem de serviço, cobra,
-conduz uma régua de pós-venda. Se o encaminhamento cair num CRM do cliente, o que sobe o nível é o
-CRM (1 sistema), não a qualificação.
+#### As quatro perguntas que decidem, nesta ordem
+
+| # | Pergunta | Resposta → nível |
+| --- | --- | --- |
+| 1 | **Quantos sistemas DO CLIENTE a Maísa lê ou escreve?** (depois da decisão "deles ou o nosso") | 0 → segue · 1–2 → M2 · 3+ → M3 |
+| 2 | **As unidades têm regras de negócio diferentes?** (preço, serviço, agenda ou equipe que muda por unidade) | sim → M2 |
+| 3 | **Há outro canal além do WhatsApp?** (Instagram, site, e-mail) | sim → M3 |
+| 4 | **A Maísa executa algum processo sozinha, com consequência fora da conversa, sem uma pessoa da empresa aprovando antes?** | 1 → M2 · 2+ → M3 |
+
+Nenhum "sim" → **M1**. A pergunta 4 é a única de julgamento; as três primeiras são contagem.
+
+#### O teste do humano — o que é e o que não é fluxo próprio
+
+**Se o que a Maísa produz vai para uma pessoa da empresa decidir, é atendimento com handoff: M1.** Só
+é fluxo próprio quando a Maísa **age em nome do cliente sem ninguém aprovar antes**, e o efeito sai
+da conversa.
+
+| Não sobe o nível — é M1 | Sobe — é fluxo próprio (M2) |
+| --- | --- |
+| qualificar lead com critérios e mandar o briefing ao vendedor ou corretor certo | **cobrar**: gerar boleto ou link de pagamento, conduzir régua de inadimplência |
+| montar um pedido, ordem de serviço ou solicitação estruturada que alguém aprova | **campanha ativa**: a Maísa inicia contato em régua de pós-venda, reativação ou renovação |
+| memória e histórico por cliente, preferências, "o de sempre" | **orçamento fechado**: calcular e enviar preço por regra do cliente, sem revisão humana |
+| painel de conversas ou de pedidos da Maísa, relatório mensal | **confirmar e alterar sozinha** algo que custa dinheiro ao cliente (reserva paga, cancelamento com multa) |
+| importar e atualizar planilha, Google Sheets, Google Calendar ou Outlook | |
+| roteamento entre vendedores, horário de atendimento, mensagem fora do horário | |
+
+⚠️ **O que parece complexo e não é.** Um deck com "plataforma de gestão", "painel", "geração
+automática de OS" ou "briefing estruturado" costuma descrever o **produto M1** com outro nome.
+Pergunte: *o cliente usa algum sistema que a Maísa precisa acessar? Alguém da empresa revisa o que ela
+produz?* Se as respostas forem "não" e "sim", é M1.
+
+#### Empresa pequena é quase sempre M1
+
+Micro e pequena empresa, **uma unidade, sem sistema de gestão** (a operação roda em WhatsApp e
+planilha) cai em M1 pela pergunta 1 e, quase sempre, pela 4. **M2 sem nenhum sistema do cliente é
+exceção:** só por regras diferentes entre unidades ou por um fluxo próprio da coluna da direita, e o
+motivo vai escrito na proposta. Se você chegou a M2 numa empresa assim, releia a pergunta 4.
 
 Na dúvida entre dois níveis, **fique no de baixo** e escreva o porquê. Item "novo" (ninguém da casa
 fez) **não sobe o nível**: entra à parte, pela taxa de construção.
@@ -196,9 +233,12 @@ tokens são repasse.)*
 ```
 1. decisão       para cada função: sistema do cliente ou o nosso?
 2. sistemas      conte os sistemas DO CLIENTE que a Maísa lê ou escreve
-3. nível         0 sistemas e uma regra (qualificação e handoff inclusos) → M1
-                 1–2 sistemas, ou fluxo próprio, ou regras por unidade → M2
-                 3+ sistemas, ou multicanal, ou vários fluxos        → M3
+3. nível         as quatro perguntas, em ordem:
+                   sistemas do cliente   0 → segue · 1–2 → M2 · 3+ → M3
+                   regras por unidade    sim → M2
+                   outro canal           sim → M3
+                   fluxo próprio         1 → M2 · 2+ → M3   (teste do humano)
+                 nenhum "sim" → M1
 4. setup         tabela do nível + itens novos (sw × R$ 1.600), × 1,15 se pacote enterprise
 5. mensalidade   tabela do nível + R$ 250 × ⌈(conversas − 3.000) ÷ 1.000⌉, se passar de 3.000
 6. ano 1         setup + 12 × mensalidade

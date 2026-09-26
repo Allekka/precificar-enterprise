@@ -82,6 +82,12 @@ perda ou dado interno entra aqui** — este repositório é público.
 
 ---
 
+**Versão 9 · 25/09/2026.** O nível da Maísa virou **quatro perguntas**, em ordem (sistemas do cliente,
+regras por unidade, outro canal, fluxo próprio), com o **teste do humano**: se uma pessoa da empresa
+recebe e decide o que a Maísa produz — lead qualificado, pedido, ordem de serviço —, é **M1**. Empresa
+pequena sem sistema de gestão é quase sempre M1. A skill agora explica os três níveis ao comercial,
+mostra como chegou ao nível e o que o mudaria, e pede confirmação.
+
 **Versão 8 · 25/09/2026.** Três correções: **sem limite de prazo** de implementação (o gate 1 fica só
 no valor); **qualificação de lead com passagem ao vendedor é Maísa M1**, e fluxo próprio (M2) é pedido,
 cobrança ou pós-venda; a **sustentação do âncora passa a um terço do setup por ano**, que fecha a meta

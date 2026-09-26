@@ -141,9 +141,36 @@ cliente tem ou o dela. **É isso que define o nível**: função no nosso sistem
 do cliente) não conta; cada sistema do cliente conta um. Se a decisão não veio no card, pergunte. Se
 depender do cliente, precifique pelo "nosso" e ponha a integração como item condicionado, com preço.
 
-**Qualificar lead e passar ao vendedor é M1**, com briefing e roteamento inclusos. Fluxo próprio (M2)
-é quando a Maísa executa um processo além da conversa: pedido ou ordem de serviço, cobrança, régua de
-pós-venda.
+🎯 **Na Maísa, escolha o nível COM o comercial — nunca em silêncio.** A diferença entre M1 e M2 é
+quase o dobro do ano 1, e já se errou isso lendo palavras do deck. Faça assim:
+
+1. **Explique os três níveis em uma linha cada**, antes de qualquer número:
+   - **M1** — a Maísa conversa e entrega para uma pessoa da empresa (R$ 14.000 + R$ 1.100/mês)
+   - **M2** — ela lê ou escreve no sistema do cliente, ou age sozinha num processo (R$ 30.000 + R$ 1.900/mês)
+   - **M3** — várias integrações, vários canais ou vários processos (R$ 55.000 + R$ 3.200/mês)
+2. **Responda as quatro perguntas do [`modelo.md`](modelo.md) § O nível, em ordem**, com o material:
+   sistemas do cliente · regras por unidade · outro canal · fluxo próprio. **O que o material não
+   responder, pergunte ao comercial, uma pergunta por vez.**
+3. **Aplique o teste do humano na pergunta 4:** se o que a Maísa produz — briefing, pedido, ordem de
+   serviço, resumo — vai para uma pessoa da empresa decidir, **não é fluxo próprio**. Qualificar lead,
+   montar pedido, painel e histórico por cliente são **M1**.
+4. **Mostre como chegou ao nível e o que o mudaria**, com a diferença em reais, e peça ao comercial
+   para confirmar antes de seguir:
+
+```
+NÍVEL — como cheguei
+  1 sistemas do cliente   0 — leads no cadastro da Maísa; base importada da planilha
+  2 regras por unidade    não — uma unidade
+  3 outro canal           não — só WhatsApp
+  4 fluxo próprio         não — o briefing vai para o corretor decidir (teste do humano)
+  → M1 · R$ 14.000 + R$ 1.100/mês = ano 1 R$ 27.200
+  subiria para M2 (+R$ 25.600 no ano 1) se: os leads tivessem de entrar no CRM do cliente, ou a
+  Maísa agendasse visita e cobrasse sinal sozinha
+  → confirma o M1?
+```
+
+⚠️ **Empresa pequena — uma unidade, operação em WhatsApp e planilha, sem sistema de gestão — é quase
+sempre M1.** Se você chegou a M2 sem nenhum sistema do cliente, releia a pergunta 4 e escreva o motivo.
 
 **Na dúvida entre dois níveis, fique no de baixo** e escreva o porquê. Volume e alunos que vieram da
 pesquisa entram **"a confirmar"**.
@@ -232,7 +259,9 @@ EMPRESA       Clínicas Exemplo Ltda · CNPJ 00.000.000/0001-00 · aberta em 201
               ALERTAS: nenhum · NÃO ACHEI: faturamento
 ADERÊNCIA     Maísa · pronto: atendimento, FAQ, agenda · perto: handoff (feito no Ludi)
               novo: nenhum · integração com o sistema de gestão da clínica (credencial: cadastro)
-NÍVEL         M2 — agenda e cadastro no sistema DA CLÍNICA (decidido no mapeamento): 1 sistema
+NÍVEL         M2 — pergunta 1: agenda e cadastro no sistema DA CLÍNICA (decidido no mapeamento) =
+              1 sistema · 2 a 4: não · confirmado pelo comercial
+              desceria para M1 (−R$ 25.600) se agenda e cadastro fossem para o sistema da Maísa
               2.400 conversas/mês (cliente, reunião de 18/09)
 PREÇO         setup        R$ 30.000   tabela M2
               mensalidade  R$  1.900   tabela M2 · abaixo de 3.000 conversas, sem adicional
@@ -252,7 +281,7 @@ O QUE ASSUMI  ganho declarado na reunião, não verificado
               2.400 conversas/mês estimadas com a cliente, não medidas
               API do sistema de gestão em "cadastro", ninguém da casa testou — confirmar na fase 1
               nenhum número foi dito à cliente antes desta proposta
-LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v8,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v9,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
 ```
 
 **"O que assumi" é obrigatório e não pode ser cosmético.** Vai para a proposta como premissa.
@@ -279,6 +308,8 @@ cola no arquivo compartilhado do núcleo. Se ninguém souber onde ele está, dig
 - ❌ Voltar a formar o preço por semanas × taxa. Esforço é piso e é taxa de item novo; o resto é a
   tabela do produto.
 - ❌ Cobrar por assento.
+- ❌ Subir a Maísa de nível por palavra do deck ("plataforma", "painel", "ordem de serviço"). O nível
+  sai das quatro perguntas, e o comercial confirma.
 - ❌ Descontar por reuso entre produtos de linguagens diferentes. Atravessa conhecimento, não código.
 - ❌ Ancorar a proposta no orçamento que o cliente deixou escapar, ou no preço de uma proposta antiga.
 - ❌ Montar três versões do mesmo escopo. A proposta é uma; o que não cabe vira fase 2.
