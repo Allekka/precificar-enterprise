@@ -2,11 +2,16 @@
 
 O que o comercial joga na skill antes da proposta. **Não é para preencher em ordem nem de uma vez**
 — jogue o que tem: card do ValidaNI, texto corrido, transcrição, print de conversa. A skill lê,
-pesquisa a empresa na internet, extrai o que consegue e pergunta o que falta, **uma coisa por vez**.
+pesquisa a empresa na internet, extrai o que consegue e mostra um **painel**: o que já sabe, o que
+falta (em ordem do quanto mexe no preço) e a **faixa** em que o preço vai cair. Depois pergunta o que
+falta, **uma coisa por vez**, e a faixa estreita a cada resposta.
 
-## Os campos bloqueantes
+⚠️ **A faixa do painel é só para você.** Não diga ao cliente: faixa dita antes de fechar o escopo vira
+teto na cabeça dele.
 
-Sem eles não sai preço, e a skill não deve inventá-los.
+## Os campos que mudam o preço
+
+Sem eles não sai preço **fechado** — sai a faixa —, e a skill não deve inventá-los.
 
 | Produto | Campo | Por que bloqueia |
 | --- | --- | --- |
@@ -21,6 +26,32 @@ do cliente ela lê ou escreve · as unidades têm regras diferentes · há outro
 faz algo sozinha, com efeito fora da conversa, **sem uma pessoa da empresa aprovar antes** (cobrar,
 campanha ativa, orçamento fechado)? Se a última resposta for "não, alguém da empresa recebe e decide",
 é M1. A skill mostra o nível e o que o mudaria, e **o comercial confirma**.
+
+### Quanto cada resposta mexe — para saber o que perguntar primeiro
+
+Os números são os de [`modelo.md`](modelo.md), no **ano 1** (setup + 12 mensalidades), sem o repasse.
+
+| Produto | Resposta | Mexe no ano 1 |
+| --- | --- | --- |
+| **Maísa** | nenhum sistema do cliente, nada sozinha, uma regra, só WhatsApp → **M1** | **R$ 27.200** (R$ 14.000 + R$ 1.100/mês) |
+| | 1 ou 2 sistemas do cliente, **ou** 1 processo sozinha, **ou** regras diferentes por unidade → **M2** | **R$ 52.800** (+R$ 25.600) |
+| | 3+ sistemas do cliente, **ou** outro canal, **ou** 2+ processos sozinha → **M3** | **R$ 93.400** (+R$ 40.600 sobre o M2) |
+| | cada 1.000 conversas/mês acima de 3.000 | +R$ 3.000 |
+| **Plum** | núcleo: 1 base própria, até 2.000 perguntas/mês, todo mundo vê tudo | **R$ 41.600** (R$ 20.000 + R$ 1.800/mês) |
+| | cada sistema de terceiro (ERP, CRM…) lido por API | +R$ 14.800 (R$ 10.000 + R$ 400/mês) |
+| | "cada um só vê o próprio dado" (isolamento) | +R$ 12.000 e o gate 8 |
+| | plataforma web própria (SSO, perfis, painel) | +R$ 15.000 |
+| | outra base própria do cliente | +R$ 4.000 |
+| | de até 2.000 para até 6.000 perguntas/mês · de 6.000 para 15.000 | +R$ 14.400 · +R$ 21.600 |
+| **Ludi** | escola até 600 alunos, só Atendimento (o piso manda) | **R$ 19.400** (R$ 5.000 + R$ 1.200/mês) |
+| | cada 100 alunos acima de 600, no Atendimento | +R$ 2.400 |
+| | módulo Pedagógico | +R$ 45 por aluno por ano |
+| | cada sistema acadêmico integrado | +R$ 10.000 |
+| **todos** | 2+ requisitos formais (SSO, questionário de LGPD, homologação, jurídico do cliente, cadastro de fornecedor) | +15% no setup |
+| | item que ninguém da casa fez | +R$ 1.600 por semana-analista que o PM dimensionar |
+
+Por isso, na Maísa, a primeira pergunta quase sempre é **"agenda, cadastro e CRM ficam no sistema do
+cliente ou no da Maísa?"**: é a que separa R$ 27 mil de R$ 53 mil.
 
 Sobre o primeiro campo: **concreto, não adjetivo.** "Quer algo mais personalizado" não é resposta.
 "Quer que o lembrete saia 48 h antes em vez de 24 h" é. "Quer consultar quanto sobrou do orçamento
@@ -58,9 +89,9 @@ custo-hora carregado = salário mensal × 1,8 ÷ 160
 
 | Campo | Se não souber |
 | --- | --- |
-| **Lista item por item** (bloqueante) | volte para o cliente. É o único campo sem substituto |
+| **Lista item por item** (muda o preço) | volte para o cliente. É o único campo sem substituto |
 | Como ele resolve isso hoje — planilha, pessoa, sistema, ninguém | assuma "ninguém" e declare |
-| **Sistemas a integrar, um por nome** (bloqueante) | pergunte o nome exato. "O ERP deles" não serve: ERP diferente é preço diferente |
+| **Sistemas a integrar, um por nome** (muda o preço) | pergunte o nome exato. "O ERP deles" não serve: ERP diferente é preço diferente |
 | Ele topa mudar o processo, ou a solução tem que caber no processo atual | assuma que tem que caber, que é o caso caro |
 
 ⚠️ **Para cada sistema nomeado, a skill checa a família e o status de credencial** (§ Integrações em
@@ -71,7 +102,7 @@ qualquer conta, e costumam pedir uma **fase 0 paga**.
 
 | Campo | Se não souber |
 | --- | --- |
-| **A unidade do produto** (bloqueante): conversas/mês, perguntas/mês, alunos ativos | estime **com ele** na reunião. A pesquisa ajuda (unidades, matrículas no Censo Escolar), mas entra "a confirmar" |
+| **A unidade do produto** (muda o preço): conversas/mês, perguntas/mês, alunos ativos | estime **com ele** na reunião. A pesquisa ajuda (unidades, matrículas no Censo Escolar), mas entra "a confirmar" |
 | Quantas pessoas vão operar a solução | estime pela operação e declare |
 | Tamanho da operação atendida, em pessoas | a pesquisa dá o da empresa; a operação atendida costuma ser menor — pergunte |
 
@@ -116,6 +147,11 @@ proposta como premissa e protege o time; lacuna esquecida vira retrabalho não f
 
 ## O que a skill devolve
 
+Enquanto falta resposta: o **painel** (o que já sei · o que falta, com quanto mexe · o que impede
+apresentar · a faixa agora · a próxima pergunta). Quando tudo o que muda o preço estiver respondido,
+ou quando você pedir o número (sai marcado PROVISÓRIO):
+
+0. **Resumo** — o preço em uma linha, se dá para apresentar e o que confirmar antes
 1. **Qualificação** — e, se duas das três perguntas acenderem, QUALIFICAÇÃO FRACA no topo
 2. **Empresa** — o que a pesquisa achou, com fonte e data, e o que não achou
 3. **Aderência** — produto, e o pedido em pronto / perto / novo
@@ -134,3 +170,23 @@ proposta como premissa e protege o time; lacuna esquecida vira retrabalho não f
 - Não substitui o mapeamento técnico. Item que ninguém sabe se dá para fazer sai como lacuna
   declarada, não resolvido.
 - Não faz due diligence. A pesquisa é de dez minutos, para embasar preço e qualificação.
+
+## Glossário — o que as palavras da saída querem dizer
+
+| Palavra | Quer dizer |
+| --- | --- |
+| **setup** | o que o cliente paga pela implantação, uma vez |
+| **mensalidade** | o que ele paga por mês ao NI: sustentação, 6 h de evolução, suporte, relatório. Não inclui o repasse |
+| **ano 1** | setup + 12 mensalidades. É o número que se compara com o ganho do cliente |
+| **repasse** | tokens de IA, servidor, WhatsApp da Meta, APIs pagas. O cliente paga direto aos fornecedores, fora do ano 1; a proposta traz uma estimativa |
+| **faixa** | o menor e o maior preço possíveis com o que ainda falta responder. Interna |
+| **provável** | o preço se o que falta vier como o material sugere, ou o de baixo quando não há pista |
+| **M1 · M2 · M3** | os níveis da Maísa: conversa e entrega a uma pessoa · lê ou escreve no sistema do cliente, ou age sozinha · várias integrações, canais ou processos |
+| **sistema do cliente** | um sistema que já é dele (ERP, CRM, gestão da clínica) e que a solução lê ou alimenta. Agenda do Google e o cadastro da própria Maísa não contam |
+| **semana-analista (sw)** | uma pessoa do time por uma semana de calendário. É como o PM dimensiona item novo |
+| **item novo** | algo que ninguém da casa fez. Entra à parte, a R$ 1.600 por semana-analista |
+| **item condicionado** | entra na proposta com a condição e o preço ao lado ("se o ERP tiver API: +R$ 14.800") |
+| **gate** | alerta que pede alguém do núcleo olhar antes de apresentar. São 13, em [`modelo.md`](modelo.md) |
+| **captura** | ano 1 ÷ ganho anual declarado pelo cliente. Alvo de 10% a 20% |
+| **fase 2** | o que não coube agora, já com escopo e preço escritos |
+| **pacote enterprise** | +15% no setup quando o cliente tem 2+ requisitos formais de empresa grande |

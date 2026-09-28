@@ -27,11 +27,19 @@ Quem vende usa o **claude.ai**, e é para lá que esta skill vai. São quatro pa
 4. Escolha o `.zip`. Se a skill aparecer na lista como `precificar-enterprise`, acabou.
 
 **Deixe a busca na web ligada.** Desde a v6 a skill pesquisa a empresa do cliente antes de
-precificar; sem busca, ela pede as respostas a você. Se o conector do ValidaNI estiver disponível na
-sua conta, ligue também: a skill lê o card direto.
+precificar; sem busca, ela pede as respostas a você.
+
+**O ValidaNI no claude.ai** pede um passo a mais, porque o conector personalizado do claude.ai não
+aceita o token que vai no Claude Code. O caminho que funciona hoje é o **app do Claude no computador
+com a extensão do ValidaNI** (peça o arquivo ao núcleo); os outros, e o que colar quando não houver
+conector, estão em [`validani.md`](validani.md). Sem ValidaNI a skill funciona igual: ela avisa que
+não leu o card e pede o material.
 
 Depois disso **não precisa chamar a skill pelo nome.** Jogue as anotações da reunião no chat e peça
-o preço — a descrição dela já cobre "montar proposta", "orçar cliente" e "quanto custa".
+o preço — a descrição dela já cobre "montar proposta", "orçar cliente" e "quanto custa". Não precisa
+estar completo: a cada mensagem a skill mostra um **painel** com o que já sabe, o que falta (em ordem
+do quanto mexe no preço), a **faixa** em que o preço vai cair e a próxima pergunta. A faixa é só para
+você, não para o cliente.
 
 Requer plano **Pro, Max, Team ou Enterprise**.
 
@@ -60,6 +68,8 @@ num dos dois lados.
 | [`modelo.md`](modelo.md) | fonte da verdade dos números: as tabelas e o passo a passo de Maísa, Plum e Ludi, valor, piso, mensalidade, contrato, gates, desconto | o agente, e quem revisa o modelo |
 | [`mercado.md`](mercado.md) | o que o mercado cobra por produto, com os links — a âncora das tabelas | o agente, e **o comercial**, para defender o preço |
 | [`pesquisa-empresa.md`](pesquisa-empresa.md) | como pesquisar a empresa do cliente na internet, e o que isso muda no preço | o agente |
+| [`calcular.py`](calcular.py) | a mesma conta do `modelo.md` em Python: o preço quando tudo está respondido, a faixa e o impacto de cada resposta enquanto falta. `python calcular.py --teste` confere | o agente (no code execution), e quem muda um número |
+| [`validani.md`](validani.md) | como ligar o ValidaNI no claude.ai, e o que colar quando não der | **o comercial** |
 | [`empacotar.py`](empacotar.py) | gera o `.zip` do claude.ai e confere o frontmatter e os links | quem mantém |
 
 **Se você vende:** leia o [`formulario.md`](formulario.md) inteiro uma vez — são os campos que você
@@ -70,7 +80,7 @@ vai querer ter na cabeça na próxima reunião.
 O repositório não aceita alteração direta. Fale com o mantenedor, ou faça um *fork*, mude na sua
 cópia e mande o que mudou e por quê.
 
-**Para quem mantém:** edite os `.md`, rode `python empacotar.py`, faça commit e push, e publique o
+**Para quem mantém:** edite os arquivos, rode `python calcular.py --teste` e `python empacotar.py`, faça commit e push, e publique o
 zip como release nova:
 
 ```bash
@@ -81,6 +91,16 @@ Atualize a versão no rodapé deste arquivo. **Nada com nome de cliente, valor d
 perda ou dado interno entra aqui** — este repositório é público.
 
 ---
+
+**Versão 10 · 28/09/2026.** A conversa ficou mais clara para quem usa, e **nenhum número mudou**. A cada
+mensagem a skill mostra um **painel**: o que já sabe, o que falta — em ordem do quanto cada resposta
+mexe no ano 1, com o valor em reais —, o que impede apresentar, a **faixa** em que o preço vai cair e a
+próxima pergunta. Com resposta em aberto sai faixa, não trava; se você pedir o número antes, ele sai
+marcado **PROVISÓRIO**, com o que falta como premissa. A conta roda num script, o
+[`calcular.py`](calcular.py), em vez de de cabeça. A saída ganhou um **resumo** em uma linha e os
+próximos passos. A skill diz quando o **ValidaNI** não está conectado, em vez de seguir sem o card, e o
+[`validani.md`](validani.md) explica como ligá-lo no claude.ai. O [`formulario.md`](formulario.md)
+ganhou a tabela do quanto cada resposta mexe no preço e um glossário.
 
 **Versão 9 · 25/09/2026.** O nível da Maísa virou **quatro perguntas**, em ordem (sistemas do cliente,
 regras por unidade, outro canal, fluxo próprio), com o **teste do humano**: se uma pessoa da empresa

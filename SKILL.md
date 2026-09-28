@@ -1,17 +1,20 @@
 ---
 name: precificar-enterprise
-description: Chegar a um preço defensável para a versão enterprise da Maísa (atendente de IA no WhatsApp), do Plum (consulta a dados em linguagem natural) ou do Ludi (assistente escolar) — a que passa por implementação e adaptação ao que o lead precisa. Ancora o preço no mercado de cada produto, confere contra o valor para o cliente e pesquisa a empresa na internet antes de calcular. Use quando o comercial disser que precisa montar proposta, orçar um cliente, responder "quanto custa", ou quando jogar anotações de reunião ou um card do ValidaNI e pedir um preço. NÃO use para o plug-and-play, que tem preço de tabela.
+description: Chegar a um preço defensável para a versão enterprise da Maísa (atendente de IA no WhatsApp), do Plum (consulta a dados em linguagem natural) ou do Ludi (assistente escolar) — a que passa por implementação e adaptação ao que o lead precisa. Ancora o preço no mercado de cada produto, confere contra o valor para o cliente e pesquisa a empresa na internet. Enquanto falta informação, mostra o que falta, em ordem do quanto cada resposta mexe no preço, e a faixa em que o preço vai cair. Lê o card do ValidaNI quando o conector está ligado. Use quando o comercial disser que precisa montar proposta, orçar um cliente, responder "quanto custa", ou quando jogar anotações de reunião ou um card do ValidaNI e pedir um preço. NÃO use para o plug-and-play, que tem preço de tabela.
 ---
 
 # Precificar uma venda enterprise — Maísa, Plum e Ludi
 
-O comercial joga o que tem — card do ValidaNI, anotação de reunião, transcrição, print de conversa — e
-sai daqui com **um preço — setup e mensalidade — e a conta que o gerou**, premissas, gates e o que
-a pesquisa achou da empresa. **Não é
-uma calculadora:** metade do valor está nas perguntas que ela faz antes de calcular.
+O comercial joga o que tem — o nome do card no ValidaNI, anotação de reunião, transcrição, print de
+conversa — e sai daqui com **um preço — setup e mensalidade — e a conta que o gerou**, premissas,
+gates e o que a pesquisa achou da empresa. **Enquanto falta resposta, sai com o que falta e a faixa
+em que o preço vai cair**, e cada resposta estreita a faixa. **Não é uma calculadora:** metade do
+valor está nas perguntas que ela faz antes de calcular.
 
-Os números moram em [`modelo.md`](modelo.md). As faixas de mercado de onde eles saíram, com os links,
-em [`mercado.md`](mercado.md). Como pesquisar a empresa, em [`pesquisa-empresa.md`](pesquisa-empresa.md).
+Os números moram em [`modelo.md`](modelo.md), e a mesma conta roda em [`calcular.py`](calcular.py). As
+faixas de mercado de onde eles saíram, com os links, em [`mercado.md`](mercado.md). Como pesquisar a
+empresa, em [`pesquisa-empresa.md`](pesquisa-empresa.md). Como ligar o ValidaNI no claude.ai, em
+[`validani.md`](validani.md).
 
 ## O que esta skill está protegendo
 
@@ -27,14 +30,98 @@ em [`mercado.md`](mercado.md). Como pesquisar a empresa, em [`pesquisa-empresa.m
    de fábrica, política global de TI. A ata do card diz o que o cliente falou; a pesquisa diz o que a
    empresa é.
 
+## Como a conversa anda
+
+Quem usa é o comercial, no claude.ai, muitas vezes entre uma reunião e outra. A cada mensagem ele
+precisa saber **onde está, o que falta e quanto isso vale**. Por isso a conversa tem sempre a mesma
+forma:
+
+| Momento | O que você mostra |
+| --- | --- |
+| **Chegou sem material** ("quero precificar") | a **abertura**, abaixo. Nada de pergunta solta |
+| **Primeira resposta com material** | o que entendi, em 3 a 5 linhas · EMPRESA (a pesquisa) · o **PAINEL** · a primeira pergunta |
+| **A cada resposta** | "anotado: …" em uma linha · o **PAINEL** com a faixa nova · a próxima pergunta |
+| **Tudo o que muda o preço respondido** | a faixa vira preço: a **saída completa** (Passo 8) |
+
+**A abertura**, quando vier sem material:
+
+```
+Monto o preço de uma proposta enterprise da Maísa, do Plum ou do Ludi. Me mande o que tiver:
+  • o nome da empresa, e o site se souber — ou o nome do card no ValidaNI
+  • anotações da reunião, transcrição, print do WhatsApp
+Não precisa estar completo: eu mostro o que falta e em que faixa o preço cai enquanto a gente
+preenche.
+ValidaNI: ✅ conectado — leio o card direto
+```
+
+Sem o ValidaNI, troque a última linha por `ValidaNI: ⚠️ não conectado nesta conversa — cole a ata, os
+requisitos e o chat do card. Se quiser, explico como ligar.` e tire "ou o nome do card no ValidaNI" do
+primeiro item. Se o comercial pedir para ligar, **explique você mesmo, em 3 a 4 linhas**, a partir do
+[`validani.md`](validani.md): no claude.ai ele não abre os arquivos da skill, então "veja o
+validani.md" não o ajuda.
+
+### O painel
+
+```
+📋 PAINEL · Clínica Exemplo · Maísa                                       faltam 3 respostas
+✅ JÁ SEI      1 unidade · só WhatsApp · agenda no Google Calendar dela · ~800 conversas/mês (ata)
+❓ MUDA O PREÇO — em ordem do quanto mexe
+   1. agenda e cadastro: no sistema de gestão da clínica ou no da Maísa?   até +R$ 25.600 (M1 → M2)
+   2. a Maísa vai cobrar ou confirmar reserva sozinha, sem ninguém aprovar? até +R$ 25.600 (M1 → M2)
+❓ NÃO MUDA O PREÇO, MAS A PROPOSTA PRECISA
+   3. quanto a clínica ganha por ano com isto?    é o que confere o preço contra o valor
+   ✓  algum número já foi dito a ela?             nenhum (comercial)
+⛔ ANTES DE APRESENTAR   nada até agora
+💰 FAIXA AGORA   ano 1 R$ 27.200 a R$ 52.800 · setup R$ 14.000 a 30.000 · mensal R$ 1.100 a 1.900
+                 provável: R$ 27.200 (M1) · só para você — faixa dita ao cliente vira teto
+➡️ PRÓXIMA   A agenda e o cadastro de pacientes vão ficar no sistema de gestão que a clínica já
+             usa, ou no da Maísa?   (se já souber as outras, pode responder junto)
+```
+
+**As regras do painel:**
+
+- **A faixa e o "até +R$" saem do [`calcular.py`](calcular.py)**, não de conta de cabeça (Passo 5 diz
+  como rodar). O que está em aberto entra no script como lista de opções; ele devolve o mínimo, o
+  máximo, o provável e o quanto cada resposta, sozinha, pode subir o ano 1.
+- **"Muda o preço" vem em ordem de impacto em reais**, e é dali que sai a próxima pergunta — a não
+  ser que uma resposta decida a outra: o produto antes do nível, a decisão "sistema deles ou o
+  nosso" antes de contar sistemas.
+- **Cada item diz por que importa**, em reais ou pelo que destrava. Pergunta sem motivo parece
+  burocracia.
+- **Respostas que levam ao mesmo degrau não somam.** Se três perguntas levam cada uma de M1 a M2,
+  diga uma vez: "um sim em qualquer uma já leva a M2". Quando uma delas já foi respondida e o script
+  mostrar as outras em "sem efeito no preço", elas saem de MUDA O PREÇO — mas continuam valendo como
+  escopo da proposta.
+- **Faixa larga é informação, não defeito.** Com o card vazio, a Maísa vai de R$ 27.200 a R$ 93.400:
+  diga isso, e diga qual pergunta corta mais a faixa.
+- **A faixa é interna.** Nunca vai para o cliente nem para o deck: faixa dita antes de fechar o escopo
+  vira teto na cabeça dele ([`modelo.md`](modelo.md) § Na proposta).
+- **⛔ recebe o que impede apresentar**: impedimento do ValidaNI, gate que já disparou, qualificação
+  fraca. Um sinal de qualificação sozinho (decisor fora da reunião, "verba só no ano que vem") entra
+  ali como **atenção**, não como impedimento. Vazio, escreva "nada até agora".
+- **Uma pergunta por mensagem**, mas aceite várias respostas de uma vez e não repergunte o que já
+  veio.
+- **Painel curto.** Da segunda mensagem em diante, em JÁ SEI só o que acabou de chegar. Sem jargão
+  sem explicação: na primeira vez que aparecer M1, repasse, gate ou semana-analista, meia linha diz o
+  que é (glossário no fim do [`formulario.md`](formulario.md)).
+
+**"Não sei" não fecha o item.** Ele continua em aberto, vira pergunta para a próxima reunião com o
+cliente, e a faixa fica como está. **"Não tem" fecha.**
+
+**"Me dá o número agora."** O comercial pode pedir o preço antes de fechar tudo. Dê a saída completa
+com **PROVISÓRIO** na primeira linha: o preço é o **provável** do script (o palpite onde houver, o de
+baixo onde não houver), cada resposta em aberto entra em O QUE ASSUMI e, se ela mudar o preço, vai
+como **item condicionado com o preço ao lado** ("se a agenda for para o sistema da clínica: +R$ 25.600
+no ano 1"). Nunca feche em silêncio o que está em aberto.
+
 ## Regras que não se quebram
 
-**Os campos bloqueantes** — sem eles não sai preço, e você **não os inventa**. Pergunte, uma coisa
-por vez, e espere a resposta. Lista completa em [`formulario.md`](formulario.md).
+**Os campos que mudam o preço** — sem eles não sai preço **fechado**: sai a faixa. Você **não os
+inventa**; o que não veio fica em aberto no painel. Lista completa em [`formulario.md`](formulario.md).
 
 | Todos | Maísa | Plum | Ludi |
 | --- | --- | --- | --- |
-| o que ele pediu, **item por item** · quais **sistemas do cliente** entram, **pelo nome** | conversas por mês · unidades | perguntas por mês (estimadas com ele) · **quem pode ver o quê** | **alunos ativos** · módulos |
+| o que ele pediu, **item por item** · quais **sistemas do cliente** entram, **pelo nome** | conversas por mês · unidades · as quatro perguntas do nível | perguntas por mês (estimadas com ele) · **quem pode ver o quê** | **alunos ativos** · módulos |
 
 **"Não sei" e "não tem" são respostas diferentes.** Premissa declarada protege o time; premissa
 silenciosa vira retrabalho não faturado.
@@ -46,8 +133,23 @@ para subir preço.
 
 ## Passo 0 — Ler o que veio
 
-Se o **ValidaNI** estiver conectado e houver card, leia nesta ordem:
-1. `prontidao_para_proposta` — o que **falta** no card. Impedimento para; lacuna é declarada.
+**Primeiro: o ValidaNI está ligado nesta conversa?** Se as ferramentas dele estão disponíveis
+(`prontidao_para_proposta`, `dossie_do_card`, `listar_cards`…), use. Se não estão, **diga em uma linha
+e siga com o que foi colado**:
+
+> ⚠️ O ValidaNI não está conectado nesta conversa, então não li o card. Se tiver a ata, os
+> requisitos ou o chat do card, cole aqui. Se quiser, explico como ligar.
+
+Se a abertura já deu esse aviso, não repita: basta a saída dizer que leu o que foi colado, e não o
+card. ❌ Nunca escreva como se tivesse lido um card que não leu. Se a ferramenta responder que o token está
+"ausente, inválido ou revogado", diga isso com essas palavras: quem resolve é a pessoa, com um token
+novo do ValidaNI ([`validani.md`](validani.md)).
+
+Com o ValidaNI, leia nesta ordem. O card pode vir pelo **nome da empresa**; se o nome bater com mais
+de um card, a ferramenta devolve os candidatos: mostre e pergunte qual.
+
+1. `prontidao_para_proposta` — o que **falta** no card. **Os impedimentos vão para o ⛔ do painel; as
+   lacunas, para as linhas de FALTA.** Impedimento não impede a faixa: impede fechar o preço.
 2. `dossie_do_card` — produto, ata do mapeamento, resumo da reunião, requisitos aprovados,
    condicionados e negados, e o **dimensionamento do validador técnico**, se houver.
 3. `conversa_do_card` — a ressalva que nunca virou requisito mora no chat.
@@ -55,7 +157,7 @@ Se o **ValidaNI** estiver conectado e houver card, leia nesta ordem:
 5. `transcricao_do_card` só se a fala literal importar.
 
 Sem ValidaNI, trabalhe com o que o comercial colou. Extraia o que der contra o
-[`formulario.md`](formulario.md) e guarde as perguntas para o Passo 3.
+[`formulario.md`](formulario.md) e guarde as perguntas para o painel.
 
 ## Passo 1 — Aderência: qual produto, e quanto disso a casa já sabe fazer?
 
@@ -94,10 +196,13 @@ estão em [`pesquisa-empresa.md`](pesquisa-empresa.md). Cinco perguntas:
 **Três regras que não se negociam:** pesquise a empresa, não pessoas; nunca mande dado do card para
 a busca (busque por nome, CNPJ e site); toda afirmação sai com fonte e data, e o que não achou também.
 
-Sem ferramenta de busca, peça as cinco respostas ao comercial, uma por vez, e declare na saída que a
-pesquisa não foi feita pela skill.
+Volume, unidades e alunos que vierem da pesquisa **estreitam a faixa, mas entram "a confirmar"**:
+viram palpite (`provavel`) no script, nunca resposta.
 
-## Passo 3 — Qualificar e pedir o que falta
+Sem ferramenta de busca, as cinco perguntas entram no painel, em NÃO MUDA O PREÇO, e a saída declara
+que a pesquisa não foi feita pela skill.
+
+## Passo 3 — Qualificar e perguntar o que falta
 
 **A qualificação não bloqueia o preço, mas vai no topo da saída.** Responda com o material **e** com
 a pesquisa:
@@ -108,21 +213,24 @@ a pesquisa:
 | **Existe verba nesta janela?** | "vou tentar realocar", "ano que vem" | aperto, demissões, troca de diretoria |
 | **A plataforma que ele já usa entrega isto de fábrica?** | rede social, ERP, suíte de escritório com IA | o que ele usa hoje, e se lançou função nativa |
 
-Duas das três acesas: escreva **QUALIFICAÇÃO FRACA** na primeira linha da saída, com o porquê. O
-preço sai assim mesmo — e quem vende sabe que o risco maior do deal não é o número.
+**Só acende o sinal que o material mostra.** O que ninguém perguntou ainda — a verba, por exemplo —
+vira pergunta no painel, não sinal. Duas das três acesas: **QUALIFICAÇÃO FRACA** vai para o ⛔ do
+painel e para a primeira linha da saída (logo abaixo de PROVISÓRIO, se houver), com o porquê. O preço sai assim mesmo — e quem vende sabe que o risco maior do deal não é o número.
 
-**Depois pergunte o que falta, uma pergunta por vez.** A resposta de uma muda a próxima. Três
-perguntas são obrigatórias em toda proposta:
+**Depois pergunte o que falta, pela ordem do painel:** uma pergunta por mensagem, a que mais mexe no
+preço primeiro. A resposta de uma muda a próxima. Três perguntas são obrigatórias em toda proposta e
+ficam em NÃO MUDA O PREÇO até terem resposta:
 
 🎯 **Quanto o cliente ganha por ano com isto?** É o que confere o preço contra o valor (captura de
 10%–20%) e abre o modo ROI-âncora. Leve as hipóteses da pesquisa para montar a conta **com** ele. Se
-ele não souber, escreva **"perguntado, cliente não soube"**. O que não pode é a pergunta não aparecer.
+ele não souber, escreva **"perguntado, cliente não soube"**; se quem não sabe é o comercial, **"não
+perguntado ainda — pergunta para a próxima reunião"**. O que não pode é a pergunta não aparecer.
 
 🎯 **O que ele faria se não comprasse do NI?** Contratar alguém, um SaaS de nicho, o relatório do
 ERP, a função nativa da plataforma, nada. Com o custo, se ele souber. É o teto de valor real.
 
 🎯 **Algum número já foi dito ao cliente?** Faixa falada na reunião é âncora da casa contra ela
-mesma. Registre, e se o modelo sair acima, diga na saída: quem vende precisa saber antes de entrar na
+mesma. Registre, e se o modelo sair acima, diga no ⛔: quem vende precisa saber antes de entrar na
 sala.
 
 ## Passo 4 — O nível e a unidade
@@ -142,7 +250,8 @@ do cliente) não conta; cada sistema do cliente conta um. Se a decisão não vei
 depender do cliente, precifique pelo "nosso" e ponha a integração como item condicionado, com preço.
 
 🎯 **Na Maísa, escolha o nível COM o comercial — nunca em silêncio.** A diferença entre M1 e M2 é
-quase o dobro do ano 1, e já se errou isso lendo palavras do deck. Faça assim:
+quase o dobro do ano 1, e já se errou isso lendo palavras do deck. **Enquanto as quatro perguntas não
+tiverem resposta, o nível fica em aberto no painel** ("M1 a M2"). Faça assim:
 
 1. **Explique os três níveis em uma linha cada**, antes de qualquer número:
    - **M1** — a Maísa conversa e entrega para uma pessoa da empresa (R$ 14.000 + R$ 1.100/mês)
@@ -150,7 +259,7 @@ quase o dobro do ano 1, e já se errou isso lendo palavras do deck. Faça assim:
    - **M3** — várias integrações, vários canais ou vários processos (R$ 55.000 + R$ 3.200/mês)
 2. **Responda as quatro perguntas do [`modelo.md`](modelo.md) § O nível, em ordem**, com o material:
    sistemas do cliente · regras por unidade · outro canal · fluxo próprio. **O que o material não
-   responder, pergunte ao comercial, uma pergunta por vez.**
+   responder vai para o painel, em MUDA O PREÇO.**
 3. **Aplique o teste do humano na pergunta 4:** se o que a Maísa produz — briefing, pedido, ordem de
    serviço, resumo — vai para uma pessoa da empresa decidir, **não é fluxo próprio**. Qualificar lead,
    montar pedido, painel e histórico por cliente são **M1**.
@@ -173,7 +282,8 @@ NÍVEL — como cheguei
 sempre M1.** Se você chegou a M2 sem nenhum sistema do cliente, releia a pergunta 4 e escreva o motivo.
 
 **Na dúvida entre dois níveis, fique no de baixo** e escreva o porquê. Volume e alunos que vieram da
-pesquisa entram **"a confirmar"**.
+pesquisa entram **"a confirmar"**. Conversas contadas por dia viram mês **× 30** (o WhatsApp atende
+todo dia), declarado.
 
 **Pergunta que muda o Plum mais que o número de usuários:** *todo mundo pode ver tudo?* Se cada pessoa
 só pode ver o próprio dado, é a linha de isolamento por pessoa e o gate 8.
@@ -195,6 +305,31 @@ ano 1        = setup + mensalidade × 12
 repasse      = estimativa mensal, FORA do ano 1
 ```
 
+🎯 **A conta roda no [`calcular.py`](calcular.py), que está na pasta desta skill.** Rode a cada
+resposta nova, e use o que ele devolve no painel e na saída. Monte o caso em JSON com o que se sabe e,
+para o que está em aberto, as opções:
+
+```
+python calcular.py '{"produto": "maisa", "sistemas_cliente": [0, 1], "conversas": 800,
+                     "regras_por_unidade": false, "multicanal": false, "fluxos_proprios": [0, 1]}'
+```
+
+| O campo está… | Escreva | Exemplo |
+| --- | --- | --- |
+| respondido | o valor | `"conversas": 800` |
+| em aberto, com as opções que o material deixa | a lista | `"sistemas_cliente": [0, 1]` · `"conversas": [800, 3000]` |
+| em aberto, com palpite (da pesquisa, da ata) | opções e provável | `{"opcoes": [400, 900], "provavel": 600}` |
+| em aberto, sem pista nenhuma | `"?"` | `"isolamento": "?"` |
+| item novo sem equipe do PM | `"sw_novos": "?"` | fica fora da faixa, escrito à parte |
+
+Campo que muda o preço e não veio conta como em aberto; os outros (pacote enterprise, plataforma
+web…) valem "não", e o script diz o que assumiu. `python calcular.py --help` explica o resto, e os
+campos de cada produto estão em `CAMPOS`, no próprio script. Ganho declarado, dimensionamento (`sw`) e
+alternativa entram como número só.
+
+Sem code execution, faça a conta à mão pelo [`modelo.md`](modelo.md) e mostre cada linha. O script
+confere a aritmética; **nível, aderência e os gates de julgamento continuam sendo seus.**
+
 🎯 **O que não couber no bolso do cliente vira fase 2**, com escopo e preço escritos — nunca desconto
 na tabela. Desenhe a fase 2 antes de fechar a fase 1.
 
@@ -206,8 +341,8 @@ projeto para o mesmo tamanho e erra o preço em 50%.
 🎯 **Cliente-âncora.** Quem financia um item novo paga a construção dele e depois fica, **daquela
 capacidade**, em preço de custo: sustentação sem evolução. Se o produto inteiro é novo para ele, a
 estrutura é construção + sustentação (**setup ÷ 36 por mês**, um terço do setup por ano — é o que
-fecha os 25% de recorrência), sem a tabela por unidade. ⚠️ Sem mantenedor declarado para
-depois que o autor se formar, não venda como âncora (gate 5).
+fecha os 25% de recorrência), sem a tabela por unidade (`"produto": "ancora"` no script). ⚠️ Sem
+mantenedor declarado para depois que o autor se formar, não venda como âncora (gate 5).
 
 🎯 **Tokens, infra e APIs pagas são do cliente.** Ficam fora do ano 1. A proposta traz a cláusula de
 repasse — execução **e** pós-projeto — e a estimativa mensal. Maísa tem custo medido; Plum e Ludi,
@@ -236,8 +371,8 @@ comparável: a casa concluiu que ela saiu baixa.
 
 ## Passo 7 — Os gates
 
-Qualquer um que dispare, **escale antes de apresentar**. Os treze estão em [`modelo.md`](modelo.md).
-Os que mais aparecem:
+Qualquer um que dispare, **escale antes de apresentar**, e ele vai para o ⛔ do painel no momento em
+que disparar. Os treze estão em [`modelo.md`](modelo.md). Os que mais aparecem:
 
 - **credencial de `parceria` ou não documentada** (3) — vira item condicionado ou **fase 0 paga**,
   nunca escopo fechado com data fechada.
@@ -248,9 +383,13 @@ Os que mais aparecem:
 
 ## Passo 8 — A saída
 
-Sempre neste formato, com as contas à vista:
+Sempre neste formato, com as contas à vista. **O RESUMO é para quem vende e vem primeiro**, em
+português de gente: o preço, se dá para apresentar, e o que confirmar antes.
 
 ```
+RESUMO        Maísa M2 · R$ 30.000 de setup + R$ 1.900/mês = R$ 52.800 no ano 1
+              + repasse de ≈ R$ 500/mês (tokens, infra e Meta), pago pela clínica, fora desse valor
+              dá para apresentar: sim · confirmar antes: a API do sistema de gestão (credencial)
 QUALIFICAÇÃO  ok — decisor (sócia-diretora) estava na reunião; verba do semestre confirmada
 EMPRESA       Clínicas Exemplo Ltda · CNPJ 00.000.000/0001-00 · aberta em 2014 · 4 unidades
               (site oficial, 25/09/2026) · 51–200 funcionários (LinkedIn, 25/09/2026)
@@ -281,8 +420,18 @@ O QUE ASSUMI  ganho declarado na reunião, não verificado
               2.400 conversas/mês estimadas com a cliente, não medidas
               API do sistema de gestão em "cadastro", ninguém da casa testou — confirmar na fase 1
               nenhum número foi dito à cliente antes desta proposta
-LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v9,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+PRÓXIMOS      1. validador técnico confirma a API do sistema de gestão antes de a proposta sair
+PASSOS        2. colar a LINHA CSV no registro do núcleo
+LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v10,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
 ```
+
+**Linhas que só aparecem quando há o que dizer:** `ITEM CONDICIONADO` (a condição e o preço ao lado,
+logo depois de PREÇO) e `CALENDÁRIO` (quando a conferência do Passo 6 avisar).
+
+**Saída PROVISÓRIA** (o comercial pediu o número com resposta em aberto): a primeira linha é
+`PROVISÓRIO — faltam N respostas: …`, o RESUMO traz a faixa ao lado do preço provável ("R$ 27.200,
+podendo ir a R$ 52.800 se …"), e cada resposta em aberto aparece em O QUE ASSUMI e, quando muda o
+preço, como item condicionado com o valor.
 
 **"O que assumi" é obrigatório e não pode ser cosmético.** Vai para a proposta como premissa.
 
@@ -304,7 +453,12 @@ cola no arquivo compartilhado do núcleo. Se ninguém souber onde ele está, dig
 
 ## O que NÃO fazer
 
-- ❌ Precificar sem os campos bloqueantes. Preço com sistema do cliente desconhecido é ficção.
+- ❌ Fechar preço sem os campos que mudam o preço. Preço com sistema do cliente desconhecido é ficção:
+  mostre a faixa e pergunte.
+- ❌ Fechar em silêncio o que está em aberto — nem para o lado de baixo. Em aberto vira premissa, ou
+  item condicionado com preço.
+- ❌ Passar a faixa do painel para o cliente ou para o deck.
+- ❌ Escrever como se tivesse lido o card quando o ValidaNI não está conectado.
 - ❌ Voltar a formar o preço por semanas × taxa. Esforço é piso e é taxa de item novo; o resto é a
   tabela do produto.
 - ❌ Cobrar por assento.

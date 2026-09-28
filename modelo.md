@@ -1,7 +1,9 @@
-# Modelo de precificação enterprise do NI — v9
+# Modelo de precificação enterprise do NI — v10
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
-dois divergirem, **este arquivo está certo**.
+dois divergirem, **este arquivo está certo**. A mesma conta roda em [`calcular.py`](calcular.py), que
+também dá a faixa enquanto falta resposta: **quando um número mudar aqui, mude lá** e rode
+`python calcular.py --teste`. Os números são os da v9; a v10 mudou a conversa, não a conta.
 
 **Escopo: a versão enterprise de três produtos — Maísa, Plum e Ludi.** Enterprise é a que passa por
 implementação e adaptação ao cliente. O plug-and-play tem preço de tabela (§ Os três produtos) e não
@@ -631,7 +633,9 @@ tabela ensina o cliente a pedir desconto.
 3. **Compare a mensalidade com o custo da alternativa** (uma atendente, um analista), não com preço
    de software.
 4. **Nunca diga faixa de preço antes de dimensionar.** Faixa dita na primeira reunião vira teto na
-   cabeça do cliente e âncora na cabeça de quem estima.
+   cabeça do cliente e âncora na cabeça de quem estima. A faixa que a skill mostra no painel,
+   enquanto falta resposta, é **interna**: serve para o comercial saber quanto cada pergunta vale, e
+   não vai para o cliente nem para o deck.
 
 ---
 

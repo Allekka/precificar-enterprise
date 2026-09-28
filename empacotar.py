@@ -104,9 +104,9 @@ def empacotar():
         shutil.rmtree(DIST)
     STAGE.mkdir(parents=True)
 
-    # so o material da skill: fora dotfiles (.gitignore) e scripts (.py)
+    # so o material da skill: fora dotfiles (.gitignore) e este script; o calcular.py vai, e parte da skill
     arquivos = sorted(p for p in ORIGEM.iterdir()
-                      if p.is_file() and not p.name.startswith(".") and p.suffix != ".py")
+                      if p.is_file() and not p.name.startswith(".") and p.name != Path(__file__).name)
 
     # a pasta de origem e CRLF (Windows); o zip sai em LF, que qualquer plataforma le igual
     texto = {".md", ".csv", ".txt", ".json", ".yaml", ".yml", ".py"}
