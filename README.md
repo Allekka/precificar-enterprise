@@ -92,6 +92,14 @@ perda ou dado interno entra aqui** — este repositório é público.
 
 ---
 
+**Versão 11 · 01/10/2026.** A skill passa a aprender com quem usa, e **nenhum número mudou**. Quando
+você discorda dela (do nível, de um item, de uma pergunta), ela anota e devolve no fim, em
+**DIVERGÊNCIAS**; a regra muda na versão seguinte, quando outra fonte confirmar. A qualificação
+ganhou a quarta pergunta: **o cliente aceita depender de uma empresa júnior por anos?** Se não, a
+resposta é a forma do contrato (quem mantém, documentação, transição, saída), nunca desconto. A
+linha do registro e as divergências vão para o registro de propostas do núcleo, e o motivo de perda
+ganhou uma lista de códigos.
+
 **Versão 10 · 28/09/2026.** A conversa ficou mais clara para quem usa, e **nenhum número mudou**. A cada
 mensagem a skill mostra um **painel**: o que já sabe, o que falta — em ordem do quanto cada resposta
 mexe no ano 1, com o valor em reais —, o que impede apresentar, a **faixa** em que o preço vai cair e a

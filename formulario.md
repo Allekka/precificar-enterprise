@@ -134,6 +134,7 @@ S.A., multinacional, setor regulado.
 | Orçamento que ele deixou escapar | deixe em branco — **nunca** ancore a proposta nele |
 | **Quem aprova, e se estava na reunião** | pergunte. É a causa de perda mais comum da casa |
 | **Se existe verba nesta janela, ou só no próximo ciclo** | pergunte |
+| **Se ele aceita depender de uma empresa júnior por anos** — quem mantém, certificação, contrato longo | pergunte. Se acender, a resposta vai na forma do contrato, não no preço |
 | **Equipe e semanas para itens novos** — do validador técnico ou do PM | pergunte ao comercial. Sem isso, o item novo e o piso ficam sem número, declarados |
 
 ## F · O que você não sabe
@@ -152,7 +153,7 @@ apresentar · a faixa agora · a próxima pergunta). Quando tudo o que muda o pr
 ou quando você pedir o número (sai marcado PROVISÓRIO):
 
 0. **Resumo** — o preço em uma linha, se dá para apresentar e o que confirmar antes
-1. **Qualificação** — e, se duas das três perguntas acenderem, QUALIFICAÇÃO FRACA no topo
+1. **Qualificação** — e, se duas das quatro perguntas acenderem, QUALIFICAÇÃO FRACA no topo
 2. **Empresa** — o que a pesquisa achou, com fonte e data, e o que não achou
 3. **Aderência** — produto, e o pedido em pronto / perto / novo
 4. **Nível** da tabela e a unidade
@@ -161,7 +162,8 @@ ou quando você pedir o número (sai marcado PROVISÓRIO):
 7. **Conferências** — valor, alternativa, piso, recorrência — com as contas
 8. **Gates disparados** e o que fazer com cada um
 9. **O que assumi** — as premissas que entram na proposta
-10. **A linha do `registro.csv`** pronta para colar
+10. **A linha do `registro.csv`** pronta para registrar no `inteligencia-comercial`
+11. **Divergências** — o que você discordou da skill, para a versão seguinte
 
 ## O que a skill NÃO faz
 

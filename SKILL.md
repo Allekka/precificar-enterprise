@@ -27,8 +27,8 @@ empresa, em [`pesquisa-empresa.md`](pesquisa-empresa.md). Como ligar o ValidaNI 
    três produtos, em implementações incompatíveis. Entre produtos atravessa conhecimento, não código.
 3. **Precificar sem conhecer a empresa.** A maior parte das perdas do enterprise não foi preço: foi
    decisor fora da mesa, sponsor que trocou, verba para o ano que vem, plataforma que já fazia aquilo
-   de fábrica, política global de TI. A ata do card diz o que o cliente falou; a pesquisa diz o que a
-   empresa é.
+   de fábrica, política global de TI, receio de depender de uma empresa júnior por anos. A ata do card
+   diz o que o cliente falou; a pesquisa diz o que a empresa é.
 
 ## Como a conversa anda
 
@@ -113,6 +113,22 @@ com **PROVISÓRIO** na primeira linha: o preço é o **provável** do script (o 
 baixo onde não houver), cada resposta em aberto entra em O QUE ASSUMI e, se ela mudar o preço, vai
 como **item condicionado com o preço ao lado** ("se a agenda for para o sistema da clínica: +R$ 25.600
 no ano 1"). Nunca feche em silêncio o que está em aberto.
+
+### Quando o comercial discorda
+
+O comercial vai discordar: do nível, de um item da conta, de um gate, de uma pergunta que ele acha
+inútil, do tamanho da saída. **É assim que a skill melhora**, mas não no meio do deal:
+
+- **Anote** o que a skill disse, o que ele disse e o motivo dele, com as palavras dele. Vai para
+  DIVERGÊNCIAS, na saída (Passo 8).
+- **Não mude a regra nem o número da tabela** porque ele discordou. Se a discordância for um fato
+  novo (o "CRM" é uma planilha exportada), é resposta: refaça a conta com ela, e anote assim mesmo.
+- **Se ele quiser outro preço**, o número dele vai para a proposta **como decisão dele**, escrito em
+  O QUE ASSUMI, e o gate 11 dispara se sair da tabela.
+- **Forma** ("saída longa demais", "pergunte isso antes") pode mudar já nesta conversa. Anote também.
+
+A regra muda na versão seguinte da skill, quando outra fonte confirmar a divergência: outro
+comercial, ou o desfecho do deal no registro.
 
 ## Regras que não se quebram
 
@@ -212,10 +228,16 @@ a pesquisa:
 | **Quem aprova, e estava na reunião?** | "depois de mim, a diretoria aprova" | grupo, multinacional, empresa do dono |
 | **Existe verba nesta janela?** | "vou tentar realocar", "ano que vem" | aperto, demissões, troca de diretoria |
 | **A plataforma que ele já usa entrega isto de fábrica?** | rede social, ERP, suíte de escritório com IA | o que ele usa hoje, e se lançou função nativa |
+| **Ele aceita depender de uma empresa júnior por anos?** | "quem mantém isso depois?", "que certificação vocês têm?", contrato longo, TI ou compras na mesa | política de fornecedor do grupo, exigência de certificação |
 
 **Só acende o sinal que o material mostra.** O que ninguém perguntou ainda — a verba, por exemplo —
-vira pergunta no painel, não sinal. Duas das três acesas: **QUALIFICAÇÃO FRACA** vai para o ⛔ do
+vira pergunta no painel, não sinal. Duas das quatro acesas: **QUALIFICAÇÃO FRACA** vai para o ⛔ do
 painel e para a primeira linha da saída (logo abaixo de PROVISÓRIO, se houver), com o porquê. O preço sai assim mesmo — e quem vende sabe que o risco maior do deal não é o número.
+
+**A quarta pergunta não se responde com preço.** Acesa, a proposta leva a resposta por escrito: quem
+mantém depois que o time se formar (o mantenedor do gate 5), documentação e código entregues ao
+cliente, transição e taxa de saída ([`modelo.md`](modelo.md) § A forma do contrato). Desconto não
+compra confiança; preço baixo de EJ costuma ler como amadorismo.
 
 **Depois pergunte o que falta, pela ordem do painel:** uma pergunta por mensagem, a que mais mexe no
 preço primeiro. A resposta de uma muda a próxima. Três perguntas são obrigatórias em toda proposta e
@@ -421,9 +443,15 @@ O QUE ASSUMI  ganho declarado na reunião, não verificado
               API do sistema de gestão em "cadastro", ninguém da casa testou — confirmar na fase 1
               nenhum número foi dito à cliente antes desta proposta
 PRÓXIMOS      1. validador técnico confirma a API do sistema de gestão antes de a proposta sair
-PASSOS        2. colar a LINHA CSV no registro do núcleo
-LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v10,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+PASSOS        2. registrar a LINHA CSV e as DIVERGÊNCIAS no inteligencia-comercial (Passo 9)
+LINHA CSV     2026-09-25,Clínicas Exemplo,maisa,,proposta_enviada,30000,,1900,12,52800,8,,2,16,,0,,"agenda e cadastro no sistema da clínica",,,,,,v11,M2,repasse,500,300000,"1 recepcionista a mais: R$ 54 mil/ano"
+DIVERGÊNCIAS  1. ganho anual: o comercial acha que clínica pequena nunca sabe responder — "elas não
+                 fazem essa conta" (comercial). Pergunta mantida (é obrigatória); nada mudou aqui
 ```
+
+**DIVERGÊNCIAS é obrigatória.** Uma linha por discordância do comercial (§ Quando o comercial
+discorda): o que a skill disse, o que ele disse, o motivo, e se mudou algo nesta conversa. Sem
+nenhuma, escreva `nenhuma`. É o que faz a versão seguinte da skill acertar mais.
 
 **Linhas que só aparecem quando há o que dizer:** `ITEM CONDICIONADO` (a condição e o preço ao lado,
 logo depois de PREÇO) e `CALENDÁRIO` (quando a conferência do Passo 6 avisar).
@@ -447,9 +475,29 @@ O campo `status` aceita: `proposta_enviada` · `em_negociacao` · `esfriou` · `
 `em_andamento` · `CONGELADO`. **`esfriou` não é `perdido`.** Em `perdido`, **o motivo não é
 opcional** — é o único campo que diz onde o preço matou o deal, e onde não matou.
 
-⚠️ **A cópia da base que veio dentro da skill é um retrato congelado.** No claude.ai cada pessoa sobe
-a própria cópia; o que você escrever aqui não chega a ninguém. A linha só vira base quando alguém a
-cola no arquivo compartilhado do núcleo. Se ninguém souber onde ele está, diga isso em voz alta.
+Em `perdido`, `categoria_perda` leva um destes códigos, e `motivo_perda`, as palavras do cliente:
+
+| Código | Quando |
+| --- | --- |
+| `decisor` | quem assina nunca esteve numa reunião |
+| `sponsor` | quem puxava o projeto dentro do cliente mudou ou saiu |
+| `timing` | verba ou janela: "ano que vem", "depois do orçamento" |
+| `substituto` | uma plataforma que ele já tem fazia aquilo de fábrica |
+| `politica-ti` | política de TI do grupo, matriz ou compliance vetou |
+| `preco` | **só se o cliente disse** "caro". Silêncio não é "caro" |
+| `aderencia` | o produto não resolvia a dor dele |
+| `concorrente` | fechou com outro fornecedor |
+| `confianca-ej` | não quis depender de uma empresa júnior |
+| `outro` | escreva qual |
+
+Se dois disputam, o que aconteceu **primeiro** ganha: decisor ausente que depois achou caro é
+`decisor`.
+
+⚠️ **O que você escrever aqui não chega a ninguém:** no claude.ai cada pessoa tem a própria cópia da
+skill. **O arquivo compartilhado do núcleo é `registro/propostas.csv`, no repositório
+`inteligencia-comercial` do NI.** Diga ao comercial, na saída: quem tem o repositório roda
+`/registrar-proposta` lá com a LINHA CSV e as DIVERGÊNCIAS; quem não tem, manda as duas para quem
+tem.
 
 ## O que NÃO fazer
 
@@ -467,6 +515,10 @@ cola no arquivo compartilhado do núcleo. Se ninguém souber onde ele está, dig
 - ❌ Descontar por reuso entre produtos de linguagens diferentes. Atravessa conhecimento, não código.
 - ❌ Ancorar a proposta no orçamento que o cliente deixou escapar, ou no preço de uma proposta antiga.
 - ❌ Montar três versões do mesmo escopo. A proposta é uma; o que não cabe vira fase 2.
+- ❌ Mudar uma regra ou um número da tabela porque o comercial discordou. Vai para DIVERGÊNCIAS; a
+  regra muda na versão seguinte, com evidência.
+- ❌ Responder com desconto ao receio de depender de uma empresa júnior. A resposta é a forma do
+  contrato: mantenedor, documentação, transição, saída.
 - ❌ Baixar o preço da tabela porque o cliente reclamou. Tire escopo (vira fase 2) ou negocie termo
   (entrada, parcelas), não preço.
 - ❌ Transformar risco em margem. Risco vira **cláusula**: item condicionado, fase 0, data

@@ -1,9 +1,10 @@
-# Modelo de precificação enterprise do NI — v10
+# Modelo de precificação enterprise do NI — v11
 
 Fonte da verdade dos números. O [`SKILL.md`](SKILL.md) descreve o fluxo e aponta para cá; quando os
 dois divergirem, **este arquivo está certo**. A mesma conta roda em [`calcular.py`](calcular.py), que
 também dá a faixa enquanto falta resposta: **quando um número mudar aqui, mude lá** e rode
-`python calcular.py --teste`. Os números são os da v9; a v10 mudou a conversa, não a conta.
+`python calcular.py --teste`. Os números são os da v9; a v10 mudou a conversa e a v11, a
+qualificação e o registro, não a conta.
 
 **Escopo: a versão enterprise de três produtos — Maísa, Plum e Ludi.** Enterprise é a que passa por
 implementação e adaptação ao cliente. O plug-and-play tem preço de tabela (§ Os três produtos) e não
@@ -556,6 +557,7 @@ cobrança, e o reajuste por câmbio (infra em dólar) tem de estar escrito.
 | pedido novo no meio do projeto | **controle de mudança**: trocar um requisito por outro de mesmo esforço sai sem custo; acréscimo é termo aditivo, pela taxa de construção |
 | capacidade do time na virada de safra | janela de entrega declarada, não data cravada |
 | término antecipado pelo cliente | taxa de saída escrita |
+| cliente com receio de depender de uma empresa júnior por anos | mantenedor declarado depois que o time se formar (gate 5), documentação e código entregues, transição prevista e taxa de saída, por escrito |
 
 **Fase 0.** `semanas-analista da fase × R$ 1.600`, tipicamente **R$ 5–8 mil**, **abatida do setup**
 se o cliente fechar a implementação em 30 dias. Use quando houver integração com sistema cuja API
@@ -583,7 +585,7 @@ preços**, não régua. Duas regras:
    substituto). Só conta como teto o "caro demais" dito pelo cliente.
 
 A reação observada por produto e por nível da tabela fica na versão interna da skill, com a base de
-propostas do núcleo — não neste repositório público.
+propostas do núcleo (`registro/propostas.csv` do `inteligencia-comercial`) — não neste repositório público.
 
 ---
 
